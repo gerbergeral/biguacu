@@ -138,7 +138,7 @@ input:focus, select:focus { outline: 2px solid #93c5fd; outline-offset: 1px; }
 .login p { font-size: .84rem; color: var(--muted); margin-bottom: 14px; }
 .login input { width: 100%; padding: 11px; border: 1px solid var(--line); border-radius: 10px; font-size: 1rem; margin-bottom: 10px; text-align: center; }
 .login .err { color: var(--red); font-size: .82rem; min-height: 18px; margin-top: 6px; }
-.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: .85rem; z-index: 200; display: none; max-width: 92vw; text-align: center; }
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 14px; width: max-content; font-weight: 700; font-size: .85rem; z-index: 200; display: none; max-width: 92vw; text-align: center; }
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 150; }
 
 @media (max-width: 720px) {
@@ -283,6 +283,7 @@ async function apiPost(body) {
 const RESTRITAS = ['lider', 'preencher'];
 document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', () => {
   const tab = b.dataset.tab;
+  if (RESTRITAS.includes(tab) && cfg && cfg.consulta) { toast('🔒 ' + rotulo(currentMonth) + ' está fechado (só consulta até ' + cfg.consultaAte + ').', '#b45309'); return; }
   if (RESTRITAS.includes(tab) && !isUnlocked) { pendingTab = tab; showLogin(); return; }
   switchTab(tab);
 }));
@@ -324,10 +325,12 @@ async function init() {
   $('headerInfo').innerHTML = `<div><strong>${h < 12 ? '☀️ Bom dia' : h < 18 ? '🌤️ Boa tarde' : '🌙 Boa noite'}, equipe!</strong></div><div>${now.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}</div><div>${contarUteis(now, fim)} dias úteis até o fim do mês (contando hoje)</div>`;
   try {
     const meses = await apiGet({ action: 'meses' });
-    const lista = Array.isArray(meses) ? meses.slice().sort((a, b) => mesKey(a) - mesKey(b)) : [];
-    lista.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = rotulo(m); $('monthSelect').appendChild(o); });
+    const itens = (Array.isArray(meses) ? meses : []).map(x => typeof x === 'string' ? { mes: x } : x).filter(x => x && x.mes).sort((a, b) => mesKey(a.mes) - mesKey(b.mes));
+    const lista = itens.map(x => x.mes);
+    itens.forEach(x => { const o = document.createElement('option'); o.value = x.mes; o.textContent = rotulo(x.mes) + (x.consulta ? ' · fechado (consulta)' : ''); $('monthSelect').appendChild(o); });
     if (!lista.length) { $('monthStatus').textContent = 'Nenhum mês aberto'; $('metaContent').innerHTML = '<div class="alert amber">Nenhum mês está ABERTO. A gestão abre o mês na aba CONFIG da planilha.</div>'; return; }
-    $('monthSelect').value = lista.includes(mesHoje()) ? mesHoje() : lista[lista.length - 1];
+    const abertos = itens.filter(x => !x.consulta).map(x => x.mes);
+    $('monthSelect').value = lista.includes(mesHoje()) ? mesHoje() : (abertos.length ? abertos[abertos.length - 1] : lista[lista.length - 1]);
     await loadMonth();
   } catch (e) { console.error(e); $('monthStatus').textContent = 'Erro ao conectar'; $('metaContent').innerHTML = '<div class="alert red">Não foi possível conectar com a planilha.</div>'; }
 }
@@ -347,8 +350,10 @@ async function loadMonth() {
     if (!Array.isArray(regs)) throw new Error((regs && regs.msg) || 'mês indisponível');
     cfg = c && c.ok ? c : null; records = regs; SLOTS = slotsDe(cfg, records[0]);
     const r0 = records[0];
-    $('monthStatus').textContent = r0 ? `Última apuração: ${r0.nome || '—'} · ${r0.data || ''}${r0.hora ? ' às ' + r0.hora : ''}` : 'Nenhuma apuração neste mês ainda';
-    if (isUnlocked && anterior && anterior !== currentMonth) {   // senha é por mês
+    $('monthStatus').innerHTML = (cfg && cfg.consulta ? `<span class="chip amber">🔒 Mês fechado · consulta até ${esc(cfg.consultaAte)}</span> ` : '') + esc(r0 ? `Última apuração: ${r0.nome || '—'} · ${r0.data || ''}${r0.hora ? ' às ' + r0.hora : ''}` : 'Nenhuma apuração neste mês ainda');
+    document.querySelectorAll('#nav .lock').forEach(l => { if (cfg && cfg.consulta) l.textContent = '🔒'; });
+    if (isUnlocked && cfg && cfg.consulta) setUnlocked(false);
+    else if (isUnlocked && anterior && anterior !== currentMonth) {   // senha é por mês
       const r = await apiPost({ action: 'login', mes: currentMonth, senha: senhaLider }).catch(() => null);
       if (!r || !r.ok) { setUnlocked(false); toast('A senha de ' + rotulo(currentMonth) + ' é diferente. Entre novamente.', '#dc2626'); }
     }
