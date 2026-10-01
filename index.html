@@ -240,6 +240,19 @@ body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,
 .salvar-ult strong{color:#7dd3fc}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#16a34a;color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:99px;opacity:0;transition:all .3s;z-index:10000;pointer-events:none;max-width:92vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:.875rem}
+.li-card{background:#fff;border-radius:14px;padding:12px 13px;color:var(--txt-b);border-left:4px solid #cbd5e1;box-shadow:0 2px 10px rgba(0,0,0,.07);min-width:0}
+.li-card.ok{border-left-color:#22c55e}.li-card.no{border-left-color:#ef4444}
+.li-t{font-size:13px;font-weight:800}.li-m{font-size:10px;color:var(--txt2-b);margin:2px 0 8px;line-height:1.4}
+.li-v{font-size:24px;font-weight:800;line-height:1.1}.li-card.ok .li-v{color:#16a34a}.li-card.no .li-v{color:#dc2626}
+.li-s{font-size:11px;color:var(--txt2-b);margin-top:4px}.li-b{font-size:12px;font-weight:800;margin-top:6px}
+.li-card.ok .li-b{color:#16a34a}.li-card.no .li-b{color:#94a3b8}
+.li-total{background:linear-gradient(135deg,#0a1e40,#1a4a9e);border-radius:18px;padding:1.3rem;text-align:center;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.3)}
+.li-total-v{font-size:40px;font-weight:800;color:#fbbf24;line-height:1.1}
+.li-total-d{font-size:12px;color:rgba(255,255,255,.6);margin-top:6px}
+.pol{background:#fffbeb;border-left:4px solid #f59e0b;border-radius:12px;padding:10px 13px;margin-bottom:8px;color:var(--txt-b)}
+.pol b{color:#b45309;font-size:12px}.pol div{font-size:12px;margin-top:3px}.pol small{font-size:10px;color:var(--txt2-b)}
+.min-ok{color:#16a34a!important}.min-no{color:#dc2626!important}
 .rodape{text-align:center;padding:1rem;font-size:11px;color:var(--txt3)}
 #cc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none}
 .celeb{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;text-align:center;pointer-events:none;display:none;animation:cpop .5s cubic-bezier(.17,.67,.35,1.3)}
@@ -257,22 +270,24 @@ body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,
 </head>
 <body>
 
-<div class="overlay" id="overlay">
+<div class="overlay" id="overlay" style="display:none">
   <div class="sbox">
     <div class="sbox-icon">🏋️</div>
     <div class="sbox-title">Gerber Biguaçu</div>
-    <div class="sbox-sub" id="sboxSub">Acesse para editar ou visualize os dados em tempo real</div>
+    <div class="sbox-sub" id="sboxSub">Área da líder — preenchimento de dados</div>
     <div class="sbox-err" id="serr"></div>
     <input class="sbox-inp" type="password" id="sinp" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')entrar()">
     <button class="sbox-btn" id="btnEntrar" onclick="entrar()">🔐 Entrar para editar</button>
-    <button class="sbox-ver" id="btnVer" onclick="visualizar()">👁️ Só visualizar</button>
+    <button class="sbox-ver" id="btnVer" onclick="visualizar()">← Voltar ao painel</button>
   </div>
 </div>
 
-<div class="modobar" id="modobar">
-  👁️ Modo visualização — dados sincronizados em tempo real
-  <button class="btsm" onclick="pedirSenha()">🔐 Editar</button>
+<div class="modobar" id="modobar" style="display:flex">
+  👁️ Painel atualizado em tempo real
+  <button class="btsm" onclick="pedirSenha()">🔐 Área da líder</button>
 </div>
+
+<div class="modobar" id="liderbar" style="background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3)">✏️ Área da líder ativa<button class="btsm" onclick="sairLider()">Sair</button></div>
 
 <div class="header">
   <div class="hcity">Gerber Biguaçu</div>
@@ -296,6 +311,7 @@ body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,
   <button class="tab" onclick="goTab('produtos',this)">📦 Produtos</button>
   <button class="tab" onclick="goTab('historico',this)">📋 Histórico</button>
   <button class="tab hid" id="tabColeta" onclick="goTab('preencher',this)">✏️ Preencher</button>
+  <button class="tab hid" id="tabLider" onclick="goTab('lider',this);carregarLider()">👑 Líder</button>
 </div>
 
 <!-- ================= ABA META ================= -->
@@ -389,7 +405,7 @@ body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,
     <div class="rpc rpc-tot"><div class="rpc-num" id="d_perdas">0</div><div class="rpc-lbl">Total perdas</div></div>
   </div>
   <div class="card" style="margin-top:.5rem">
-    <div class="ctitle">🎯 Meta de cancelamento — Líder</div>
+    <div class="ctitle">🎯 Meta de cancelamento da unidade</div>
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px">
       <div>
         <div style="font-size:12px;color:var(--txt2-b);margin-bottom:2px;font-weight:500">Taxa atual de cancelamento</div>
@@ -436,6 +452,16 @@ body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,
     <div class="fgeral"><span class="fgeral-lbl">Total geral folha</span><span class="fgeral-val" id="f_geral">R$ 0</span></div>
     <div style="font-size:11px;color:var(--txt2-b);margin-top:8px">* Créditos produtos não entram na folha — lançar no sistema para uso.</div>
   </div>
+
+  <div class="card">
+    <div class="ctitle">📋 Política de bonificação — consultoras</div>
+    <div class="pol"><b>Bônus meta financeira (dividido proporcionalmente)</b><div>Meta 1 (100%) → R$ 400 · Meta 2 (110%) → R$ 700 · Meta 3 (120%) → R$ 1.000</div><small>Dividido pela participação de cada consultora no total vendido pelas consultoras.</small></div>
+    <div class="pol"><b>Bônus vendas (volume individual)</b><div>15 vendas → R$ 100 · 30 vendas → R$ 200 · 45 vendas → R$ 300</div><small>R$ 100 a cada 15 vendas completas. Considera novos + rematrículas de cada consultora.</small></div>
+    <div class="pol"><b>Bônus renovação (por consultora)</b><div>Taxa ≥ 70% → R$ 50 · Taxa ≥ 85% → R$ 100</div><small>Calculado sobre a taxa de renovação da unidade inteira.</small></div>
+    <div class="pol"><b>Bônus avaliação</b><div>R$ 10 por avaliação vendida (individual)</div></div>
+    <div class="pol"><b>Crédito produtos (1%)</b><div>1% do valor de produtos vendidos por cada pessoa. Crédito interno, não entra na folha.</div></div>
+    <div class="pol" style="background:#eff6ff;border-left-color:#3b82f6"><b style="color:#1d4ed8">📊 Mínimo ideal: 40 planos (novos + rematrículas)</b><div>Abaixo disso a consultora não cobre o próprio custo. Referência de desempenho — não gera bônus.</div></div>
+  </div>
 </div>
 
 <!-- ================= ABA PRODUTOS ================= -->
@@ -461,6 +487,11 @@ body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,
     </div>
     <div class="hlist" id="hlist"><div class="hvazio">Carregando...</div></div>
   </div>
+</div>
+
+<!-- ================= ABA LÍDER (só com senha) ================= -->
+<div class="page" id="page-lider">
+  <div id="liderConteudo"><div class="hbox"><div class="hvazio">Carregando...</div></div></div>
 </div>
 
 <!-- ================= ABA PREENCHER (só com senha) ================= -->
@@ -597,18 +628,19 @@ function contarDiasUteis(a,b){ var c=0, cur=new Date(a.getFullYear(),a.getMonth(
 s('hMes', MESES[now.getMonth()]+' '+now.getFullYear());
 s('hSaud', (h<12?'☀️ Bom dia':h<18?'🌤️ Boa tarde':'🌙 Boa noite')+' · '+DIAS[now.getDay()]+', '+now.getDate()+'/'+String(now.getMonth()+1).padStart(2,'0'));
 
-(function montarSeletor(){
-  var sel=$('mesSeletor');
-  for(var i=1;i>=-24;i--){
-    var d=new Date(now.getFullYear(),now.getMonth()+i,1);
-    var o=document.createElement('option');
-    o.value=ABREV[d.getMonth()]+'/'+d.getFullYear();
-    o.textContent=MESES[d.getMonth()]+' '+d.getFullYear();
-    sel.appendChild(o);
-  }
-  sel.value=MES_HOJE;
-  _mesAnterior=MES_HOJE;
-})();
+function rotulo(m){ var p=m.split('/'); return MESES[ABREV.indexOf(p[0])]+' '+p[1]; }
+// Só os meses ABERTOS na CONFIG aparecem (controle da gestão pela planilha)
+function carregarMeses(){
+  return apiGet({action:'meses'}).then(function(lista){
+    if(!Array.isArray(lista)) lista=[];
+    var sel=$('mesSeletor'), atual=sel.value; sel.innerHTML='';
+    lista.forEach(function(m){ var o=document.createElement('option'); o.value=m; o.textContent=rotulo(m); sel.appendChild(o); });
+    if(!lista.length) return false;
+    sel.value = lista.indexOf(atual)>=0 ? atual : (lista.indexOf(MES_HOJE)>=0 ? MES_HOJE : lista[0]);
+    _mesAnterior=sel.value;
+    return true;
+  });
+}
 function getMesSelecionado(){ return $('mesSeletor').value || MES_HOJE; }
 
 var FRASES=["Cada não te deixa mais perto do próximo sim.","Resultados são construídos dia a dia.","Renovar é mais barato que captar — cuide do que já é seu.","A meta de hoje é o mínimo de amanhã.","Consistência supera intensidade — apareça todos os dias.","Um cliente bem atendido traz cinco. Um mal atendido afasta dez.","Cada renovação é uma venda que não precisa ser feita do zero.","Não espere a motivação para agir. Aja para encontrar a motivação.","A equipe que treina junta, vence junta.","Foco, disciplina e resultado — nessa ordem."];
@@ -642,7 +674,7 @@ function renderSlots(){
   _slotsKey=key;
 
   $('gridVendas').innerHTML=SLOTS.map(function(c){
-    return '<div class="cc">'+avHTML(c)+'<div style="display:flex;align-items:center;gap:4px"><div class="cn">'+esc(c.nome)+'</div><span id="rank_'+c.k+'" style="font-size:14px"></span></div><div class="cs">Consultora</div><div class="dv"></div><div class="sl">Total vendido</div><div class="sv" id="d_v'+c.k+'">R$ 0</div><div class="ss" id="d_p'+c.k+'">0 planos anuais</div></div>';
+    return '<div class="cc">'+avHTML(c)+'<div style="display:flex;align-items:center;gap:4px"><div class="cn">'+esc(c.nome)+'</div><span id="rank_'+c.k+'" style="font-size:14px"></span></div><div class="cs">Consultora</div><div class="dv"></div><div class="sl">Total vendido</div><div class="sv" id="d_v'+c.k+'">R$ 0</div><div class="ss" id="d_p'+c.k+'">0 planos anuais</div><div class="ss" id="d_min'+c.k+'" style="font-weight:700;margin-top:4px"></div></div>';
   }).join('')+'<div class="cc out"><div class="av out2">+</div><div class="cn">Outros</div><div class="cs">Líder / outros</div><div class="nb">Só registro</div><div class="dv"></div><div class="sl">Total vendido</div><div class="sv" id="d_ov">R$ 0</div><div class="ss" id="d_op">0 planos anuais</div></div>';
 
   $('gridAnuais').innerHTML=SLOTS.map(function(c){
@@ -651,7 +683,7 @@ function renderSlots(){
 
   $('gridRem').innerHTML=SLOTS.map(function(c){
     return '<div class="rc"><div class="rn"><div class="rav" style="'+cor(c).av+'">'+esc(sigla(c.nome))+'</div><span class="rnm">'+esc(c.nome)+'</span></div>'+
-      rlHTML('Vendas contabilizadas','r'+c.k+'_qtd','0 vendas')+rlHTML('Bônus vendas','r'+c.k+'_v')+rlHTML('Bônus renovações','r'+c.k+'_r')+rlHTML('Bônus avaliações','r'+c.k+'_a')+
+      rlHTML('Vendas contabilizadas','r'+c.k+'_qtd','0 vendas')+rlHTML('Mínimo ideal ('+MINIMO_IDEAL+')','r'+c.k+'_min','—')+rlHTML('Bônus vendas','r'+c.k+'_v')+rlHTML('Bônus renovações','r'+c.k+'_r')+rlHTML('Bônus avaliações','r'+c.k+'_a')+
       '<div class="rtlbl">Total variável</div><div class="rtotal" id="r'+c.k+'_t">R$ 0</div></div>';
   }).join('');
 
@@ -718,7 +750,7 @@ function aplicarConfig(cfg, mes){
   $('lockbox').style.display = fechado ? 'block' : 'none';
   $('btnSalvar').disabled = fechado;
   document.querySelectorAll('#page-preencher input').forEach(function(i){ i.disabled = fechado; });
-  s('ch_mes', $('mesSeletor').selectedOptions[0].textContent);
+  var opt=$('mesSeletor').selectedOptions[0]; s('ch_mes', opt?opt.textContent:'');
   ajustarDataRef(mes);
   recalc();
 }
@@ -732,8 +764,9 @@ function ajustarDataRef(mes){
 }
 
 // ---------- regras de remuneração ----------
-// blocos de 15 vendas = R$100 cada; excedente >= 10 → R$5/venda
-function calcBV(t){ var b=Math.floor(t/15), e=t%15; return b*100+(e>=10?e*5:0); }
+// R$100 a cada 15 vendas completas (novos + rematrículas): 15→100, 30→200, 45→300
+var MINIMO_IDEAL = 40;
+function calcBV(t){ return Math.floor(t/15)*100; }
 function totalVendido(){ var t=gi('ov'); SLOTS.forEach(function(c){ t+=gi('c'+c.k+'_v'); }); return t; }
 
 function recalc(){ recalcMeta(); recalcRem(); recalcProd(); recalcRet(); calcMetaDiaria(); }
@@ -817,7 +850,10 @@ function recalcRem(){
   _rem={};
   SLOTS.forEach(function(c){
     var p='c'+c.k+'_', n=ii(p+'novas'), r=ii(p+'remat'), av=ii(p+'aval'), bv=calcBV(n+r), ba=av*10, t=bv+rb+ba;
-    s('r'+c.k+'_qtd',(n+r)+' vendas'); s('r'+c.k+'_v',fmt(bv)); s('r'+c.k+'_r',fmt(rb)); s('r'+c.k+'_a',fmt(ba)); s('r'+c.k+'_t',fmt(t));
+    s('r'+c.k+'_qtd',(n+r)+' vendas'); s('r'+c.k+'_v',fmt(bv));
+    var okMin=(n+r)>=MINIMO_IDEAL, tMin=okMin?'✅ atingido':'faltam '+(MINIMO_IDEAL-n-r);
+    var em=$('r'+c.k+'_min'); if(em){ em.textContent=tMin; em.className='rv '+(okMin?'min-ok':'min-no'); }
+    var dm=$('d_min'+c.k); if(dm){ dm.textContent=(n+r)+' / '+MINIMO_IDEAL+' planos'+(okMin?' ✅':''); dm.className='ss '+(okMin?'min-ok':'min-no'); } s('r'+c.k+'_r',fmt(rb)); s('r'+c.k+'_a',fmt(ba)); s('r'+c.k+'_t',fmt(t));
     _rem[c.k]=t; eq+=t;
   });
   s('r_eq',fmt(eq));
@@ -950,6 +986,7 @@ function carregarDados(){
     .then(function(){
       var total=totalVendido();
       _lastMeta=total>=SU?3:total>=M2?2:total>=M1?1:0;
+      if($('page-lider').classList.contains('active')) carregarLider();
     });
 }
 function renderHistorico(regs){
@@ -975,9 +1012,7 @@ function carregarHistorico(){
 }
 
 function trocarMes(){
-  var mes=getMesSelecionado();
-  if(_modoEdicao && !getSenhas()[mes]){ pedirSenha(mes); return; }
-  _mesAnterior=mes;
+  _mesAnterior=getMesSelecionado();
   carregarDados();
 }
 
@@ -1018,8 +1053,7 @@ function mostrarErroLogin(msg){ var er=$('serr'); er.textContent=msg; er.style.d
 function pedirSenha(mes){
   _mesPendente = mes || getMesSelecionado();
   var lbl=MESES[ABREV.indexOf(_mesPendente.split('/')[0])]+' '+_mesPendente.split('/')[1];
-  s('sboxSub','Digite a senha de '+lbl+' para editar');
-  $('btnVer').textContent = _modoEdicao ? '← Voltar' : '👁️ Só visualizar';
+  s('sboxSub','Área da líder — senha de '+lbl);
   $('overlay').style.display='flex'; $('sinp').value=''; $('serr').style.display='none';
   setTimeout(function(){$('sinp').focus();},100);
 }
@@ -1032,12 +1066,13 @@ function entrar(){
     if(r && r.ok){
       setSenha(mes,senha);
       _modoEdicao=true; _mesPendente=null;
-      $('overlay').style.display='none'; $('modobar').style.display='none';
-      $('tabColeta').classList.remove('hid');
+      $('overlay').style.display='none'; $('modobar').style.display='none'; $('liderbar').style.display='flex';
+      $('tabColeta').classList.remove('hid'); $('tabLider').classList.remove('hid');
       if(getMesSelecionado()!==mes) $('mesSeletor').value=mes;
       _mesAnterior=mes;
+      var naLider=$('page-lider').classList.contains('active');
       carregarDados();
-      $('tabColeta').click();
+      if(!naLider) $('tabColeta').click();
     } else {
       mostrarErroLogin((r&&r.msg)||'Senha incorreta.');
       $('sinp').value=''; $('sinp').focus();
@@ -1046,29 +1081,85 @@ function entrar(){
   .then(function(){ btn.disabled=false; btn.textContent='🔐 Entrar para editar'; });
 }
 function visualizar(){
+  // fechar a tela de senha sem entrar: volta ao mês que estava aberto
   $('overlay').style.display='none';
-  if(_modoEdicao){
-    _mesPendente=null;
-    if(getMesSelecionado()!==_mesAnterior){ $('mesSeletor').value=_mesAnterior; }
-    return;
-  }
+  _mesPendente=null;
+  if(getMesSelecionado()!==_mesAnterior){ $('mesSeletor').value=_mesAnterior; }
+}
+function sairLider(){
+  setSenha(getMesSelecionado(),null);
+  try{ sessionStorage.removeItem('gb_senhas'); }catch(e){}
+  _modoEdicao=false;
+  $('tabColeta').classList.add('hid'); $('tabLider').classList.add('hid');
+  $('liderConteudo').innerHTML='';
   $('modobar').style.display='flex';
-  carregarDados();
+  $('liderbar').style.display='none';
+  goTab('meta',document.querySelector('.tab'));
 }
 
 // ---------- inicialização ----------
 (function(){
   aplicarConfig(null, MES_HOJE);
-  if(getSenhas()[MES_HOJE]){
+  if(Object.keys(getSenhas()).length){   // líder já entrou nesta aba do navegador
     _modoEdicao=true;
-    $('overlay').style.display='none';
-    $('tabColeta').classList.remove('hid');
-    carregarDados();
-  } else {
-    pedirSenha(MES_HOJE);
-    s('sboxSub','Acesse para editar ou visualize os dados em tempo real');
+    $('modobar').style.display='none'; $('liderbar').style.display='flex';
+    $('tabColeta').classList.remove('hid'); $('tabLider').classList.remove('hid');
   }
+  ss('spin','Conectando...');
+  carregarMeses().then(function(ok){
+    if(ok) carregarDados();              // todo mundo vê o painel direto, sem senha
+    else ss('err','Nenhum mês aberto no momento');
+  }).catch(function(){ ss('err','Erro ao conectar com a planilha'); });
 })();
+
+// ---------- ABA LÍDER (cálculo feito no servidor, só com senha) ----------
+function carregarLider(){
+  var mes=getMesSelecionado(), senha=getSenhas()[mes], el=$('liderConteudo');
+  if(!senha){
+    el.innerHTML='<div class="hbox"><div class="hvazio">🔐 Para ver o desempenho da líder em '+esc(rotulo(mes))+', digite a senha deste mês.<br><br><button class="hbtn" onclick="pedirSenha()">Digitar senha</button></div></div>';
+    return;
+  }
+  el.innerHTML='<div class="hbox"><div class="hvazio">Calculando...</div></div>';
+  apiPost({action:'lider',mes:mes,senha:senha}).then(function(r){
+    if(!r || !r.ok){
+      if(r && r.erro==='senha') setSenha(mes,null);
+      el.innerHTML='<div class="hbox"><div class="hvazio">⚠️ '+esc((r&&r.msg)||'Não foi possível carregar.')+'</div></div>';
+      return;
+    }
+    renderLider(r);
+  }).catch(function(){ el.innerHTML='<div class="hbox"><div class="hvazio">Erro de conexão.</div></div>'; });
+}
+function pctBR(v){ return v==null ? '—' : v.toFixed(1).replace('.',',')+'%'; }
+function renderLider(r){
+  var P=r.politica, F=r.financeiro, V=r.vendas, C=r.cancelamento, R=r.renovacao;
+  var nomesMeta=['Meta 1','Meta 2','Meta 3'];
+  var finSub = F.nivel>=3 ? '🏆 Meta 3 atingida' : 'Faltam '+fmt(F.metas[F.nivel]-F.total)+' para '+nomesMeta[F.nivel];
+  var venSub = V.planos<P.vendasMin ? 'Faltam '+(P.vendasMin-V.planos)+' planos para ativar' : 'Faltam '+(V.proximo-V.planos)+' para +'+fmt(P.vendasPassoValor);
+  var canSub = C.pct==null ? 'Sem dados — preencha ativos dia 01' : C.cancelados+' de '+C.ativos+' ativos · limite 4%: '+Math.floor(C.ativos*0.04)+' · 3%: '+Math.floor(C.ativos*0.03);
+  var renSub = R.pct==null ? 'Sem dados — preencha contratos vencendo' : R.feitos+' de '+R.previstos+(R.pct<85?' · faltam '+Math.max(Math.ceil(R.previstos*0.85)-R.feitos,0)+' para 85%':'');
+  function card(t,m,v,sub,b){ return '<div class="li-card '+(b>0?'ok':'no')+'"><div class="li-t">'+t+'</div><div class="li-m">'+m+'</div><div class="li-v">'+v+'</div><div class="li-s">'+sub+'</div><div class="li-b">Bônus: '+fmt(b)+'</div></div>'; }
+  var base = r.temDados ? 'Base: último registro de '+esc(r.ultimo.nome)+' em '+esc(r.ultimo.data)+(r.ultimo.hora?' às '+esc(r.ultimo.hora):'') : 'Ainda não há registros neste mês.';
+  $('liderConteudo').innerHTML=
+    '<div class="motiv"><div class="mv-title">👑 Desempenho da liderança — '+esc(rotulo(r.mes))+'</div><div class="mv-data" style="margin-bottom:0">A líder responde pelo todo da unidade: consultoras + outros. '+base+'</div></div>'+
+    '<div class="lg">'+
+      card('Meta financeira','Meta 1: '+fmt(F.metas[0])+' · Meta 2: '+fmt(F.metas[1])+' · Meta 3: '+fmt(F.metas[2]),fmt(F.total),(F.total/F.metas[0]*100).toFixed(1).replace('.',',')+'% da Meta 1 · '+finSub,F.bonus)+
+      card('Novas vendas + rematrículas','Mín. '+P.vendasMin+' planos · +'+fmt(P.vendasPassoValor)+' a cada '+P.vendasPasso,V.planos+' planos',venSub,V.bonus)+
+      card('Taxa de cancelamento','≤3% → '+fmt(P.cancelamento[0][1])+' · ≤4% → '+fmt(P.cancelamento[1][1]),pctBR(C.pct),canSub,C.bonus)+
+      card('Taxa de renovação','≥85% → '+fmt(P.renovacao[0][1])+' · ≥70% → '+fmt(P.renovacao[1][1]),pctBR(R.pct),renSub,R.bonus)+
+    '</div>'+
+    '<div class="li-total"><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">💰 Total folha — liderança</div>'+
+      '<div class="li-total-v">'+fmt(r.totalFolha)+'</div>'+
+      '<div class="li-total-d">Financeiro '+fmt(F.bonus)+' + Vendas '+fmt(V.bonus)+' + Cancelamento '+fmt(C.bonus)+' + Renovação '+fmt(R.bonus)+'</div>'+
+      '<div class="li-total-d" style="color:#fdba74">📦 Crédito produtos (1% de "Outros"): '+fmtd(r.credito)+' — não entra na folha</div></div>'+
+    '<div class="card"><div class="ctitle">📋 Política de bonificação — liderança</div>'+
+      '<div class="pol"><b>Bônus financeiro (meta da unidade)</b><div>Meta 1 (100%) → '+fmt(P.financeiro[0])+' · Meta 2 (110%) → '+fmt(P.financeiro[1])+' · Meta 3 (120%) → '+fmt(P.financeiro[2])+'</div><small>Integral para a líder quando a unidade atinge a meta.</small></div>'+
+      '<div class="pol"><b>Bônus vendas (volume da unidade)</b><div>'+P.vendasMin+' vendas = '+fmt(P.vendasBase)+' · '+(P.vendasMin+P.vendasPasso)+' = '+fmt(P.vendasBase+P.vendasPassoValor)+' · '+(P.vendasMin+2*P.vendasPasso)+' = '+fmt(P.vendasBase+2*P.vendasPassoValor)+' · a cada '+P.vendasPasso+' vendas +'+fmt(P.vendasPassoValor)+' · abaixo de '+P.vendasMin+' = R$ 0</div><small>Soma de todos os planos da unidade (novos + rematrículas), incluindo "Outros".</small></div>'+
+      '<div class="pol"><b>Bônus cancelamento (taxa da unidade)</b><div>≤3% = '+fmt(P.cancelamento[0][1])+' · ≤4% = '+fmt(P.cancelamento[1][1])+' · acima de 4% = R$ 0</div><small>Cancelamentos ÷ ativos no início do mês × 100.</small></div>'+
+      '<div class="pol"><b>Bônus renovação (taxa da unidade)</b><div>≥85% = '+fmt(P.renovacao[0][1])+' · ≥70% = '+fmt(P.renovacao[1][1])+' · abaixo de 70% = R$ 0</div><small>Renovações efetivadas ÷ renovações previstas.</small></div>'+
+      '<div class="pol"><b>Crédito produtos (1%) — informativo</b><div>O crédito de "Outros" vai para a liderança.</div></div>'+
+    '</div>';
+}
+
 
 // ---------- confete ----------
 (function(){
