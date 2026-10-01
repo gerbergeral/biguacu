@@ -64,6 +64,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; ba
 .fill.red { background: linear-gradient(90deg,#f87171,#dc2626); } .fill.blue { background: linear-gradient(90deg,#60a5fa,#2563eb); } .fill.dark { background: #111827; }
 .marks { position: relative; height: 22px; font-size: .7rem; color: var(--muted); font-weight: 700; }
 .marks span { position: absolute; transform: translateX(-100%); white-space: nowrap; }
+.marks em { font-style: normal; }
+@media (max-width: 600px) { .marks em { display: none; } }
 .marks span::before { content: ''; position: absolute; right: 0; top: -6px; width: 2px; height: 6px; background: #9ca3af; }
 .mini { height: 8px; }
 
@@ -216,7 +218,7 @@ const POL = {
   bonusMeta: [400, 700, 1000],          // Meta 1 / 2 / 3 — dividido pela participação de cada consultora
   bloco: 15, valorBloco: 100,           // R$100 a cada 15 novos ativos (novas + rematrículas)
   excMin: 10, valorExc: 5,              // sobra de 10 a 14 acima de um bloco → R$5 por venda
-  minimoIdeal: 40,                      // planos/mês para cobrir o custo da consultora
+  minimoIdeal: 40,                      // planos/mês — referência de desempenho
   renov70: 50, renov85: 100,            // bônus renovação por consultora (taxa da unidade)
   aval: 10,                             // por avaliação
   credito: 0.01,                        // 1% dos produtos → crédito de consumo
@@ -374,12 +376,16 @@ function getTotals() {
     totalEquipe: pessoas.reduce((s, p) => s + p.v, 0),
     vendasEquipe: pessoas.reduce((s, p) => s + p.vendas, 0),
     anuaisEquipe: pessoas.reduce((s, p) => s + p.anuais, 0),
-    renovTotal: num(L.renovTotal), renovFeitos: num(L.renovFeitos), ini: num(L.ativos_inicio), canc: num(L.cancelamentos),
+    renovTotal: num(L.renovTotal), renovFeitos: num(L.renovFeitos), renovAnuais: num(L.renovAnuais), ini: num(L.ativos_inicio), canc: num(L.cancelamentos),
     dataUlt: parseData(L.data)
   };
   t.totalMes = t.totalEquipe + o.v;
   t.totalVendas = t.vendasEquipe + o.vendas;
   t.totalAnuais = t.anuaisEquipe + o.anuais;
+  // Qualidade da venda: anuais (novos + rematrículas + renovações) ÷ tudo o que foi vendido/renovado
+  t.qualBase = t.totalVendas + t.renovFeitos;
+  t.qualAnuais = t.totalAnuais + Math.min(t.renovAnuais, t.renovFeitos);
+  t.qualPct = t.qualBase ? t.qualAnuais / t.qualBase * 100 : null;
   t.totalProdutos = pessoas.reduce((s, p) => s + p.prod, 0) + o.prod;
   t.naoRenovados = Math.max(t.renovTotal - t.renovFeitos, 0);
   t.saidas = t.naoRenovados + t.canc;
@@ -401,7 +407,8 @@ function proximoBonus(v) {
   return { faltam: POL.bloco - sobra, txt: `faltam ${POL.bloco - sobra} para fechar mais um bloco de 15` };
 }
 const faixa = total => { const [m1, m2, m3] = metas(); return total >= m3 ? 3 : total >= m2 ? 2 : total >= m1 ? 1 : 0; };
-function bonusMeta(v, t) { const f = faixa(t.totalMes); return f && t.totalEquipe > 0 ? v / t.totalEquipe * POL.bonusMeta[f - 1] : 0; }
+// Rateio: participação de cada consultora no TOTAL COLETIVO (inclui Outros). A fatia de Outros não é paga a ninguém.
+function bonusMeta(v, t) { const f = faixa(t.totalMes); return f && t.totalMes > 0 ? v / t.totalMes * POL.bonusMeta[f - 1] : 0; }
 const bonusRenov = t => t.taxaRenov == null ? 0 : t.taxaRenov >= 85 ? POL.renov85 : t.taxaRenov >= 70 ? POL.renov70 : 0;
 function calendario(t) {
   const p = currentMonth.split('/'), idx = ABREV.indexOf(p[0]), ano = +p[1];
@@ -414,7 +421,7 @@ function calendario(t) {
   const decorridos = base ? contarUteis(ini, base) : 0;
   const depois = base ? (() => { const d = new Date(base); d.setDate(d.getDate() + 1); return contarUteis(d, fim); })() : totais;
   const ritmo = decorridos > 0 ? t.totalMes / decorridos : 0;
-  return { restantes, totais, decorridos, ritmo, projecao: t.totalMes + ritmo * depois, temProj: decorridos >= 3, encerrado: dif < 0 };
+  return { restantes, totais, decorridos, ritmo, projecao: t.totalMes + ritmo * depois, encerrado: dif < 0 };
 }
 
 // ==================== RENDER ====================
@@ -437,8 +444,8 @@ function renderMeta(t) {
   const n = Math.max(SLOTS.length, 1);
   const linhaDia = (nome, alvo) => {
     const saldo = Math.max(alvo - total, 0), dia = cal.restantes > 0 ? saldo / cal.restantes : 0;
-    if (saldo <= 0) return `<tr><td><strong>${nome}</strong><br><span style="font-size:.75rem;color:var(--muted)">${brl(alvo)}</span></td><td colspan="3"><span class="chip green">✅ Atingida</span></td></tr>`;
-    return `<tr><td><strong>${nome}</strong><br><span style="font-size:.75rem;color:var(--muted)">${brl(alvo)}</span></td><td><strong class="info" style="font-size:1.05rem">${cal.restantes ? brl(dia / n) : '—'}</strong></td><td><strong>${cal.restantes ? brl(dia) : '—'}</strong></td><td>${brl(saldo)}</td></tr>`;
+    if (saldo <= 0) return `<tr><td><strong>${nome}</strong> · ${brl(alvo)}</td><td colspan="3"><span class="chip green">✅ Atingida</span></td></tr>`;
+    return `<tr><td><strong>${nome}</strong> · ${brl(alvo)}</td><td>${brl(saldo)}</td><td><strong>${cal.restantes ? brl(dia) : '—'}</strong></td><td><strong class="info">${cal.restantes ? brl(dia / n) : '—'}</strong></td></tr>`;
   };
   const rank = t.pessoas.map(p => ({ ...p })).sort((a, b) => b.v - a.v);
   const medal = ['🥇', '🥈', '🥉'];
@@ -449,8 +456,8 @@ function renderMeta(t) {
   if (total === 0) dica = 'Assim que a líder lançar a primeira apuração, o painel mostra quanto cada uma precisa vender por dia.';
   else if (f === 3) dica = 'Super meta batida! Agora o foco é qualidade: plano anual e renovação para começar o próximo mês com a base forte.';
   else if (cal.encerrado) dica = 'Mês encerrado para vendas. Use estes números como base para planejar o próximo mês.';
-  else if (cal.temProj && fProj > f) dica = `No ritmo atual (${brl(cal.ritmo)} por dia útil) o mês fecha em ${brl(proj)} e bate a Meta ${fProj}. Mantenham o ritmo!`;
-  else if (cal.temProj) dica = `No ritmo atual (${brl(cal.ritmo)} por dia útil) o mês fecha em ${brl(proj)}, abaixo da Meta ${f + 1}. Cada uma precisa de ${brl(cal.restantes ? falta / cal.restantes / n : 0)} por dia. ${Math.ceil(falta / POL.planoAnualValor)} plano(s) anual(is) cobrem o que falta.`;
+  else if (cal.decorridos && fProj > f) dica = `No ritmo atual (${brl(cal.ritmo)} por dia útil) o mês fecha em ${brl(proj)} e bate a Meta ${fProj}. Mantenham o ritmo!`;
+  else if (cal.decorridos) dica = `No ritmo atual (${brl(cal.ritmo)} por dia útil) o mês fecha em ${brl(proj)}, abaixo da Meta ${f + 1}. Cada uma precisa de ${brl(cal.restantes ? falta / cal.restantes / n : 0)} por dia. ${Math.ceil(falta / POL.planoAnualValor)} plano(s) anual(is) cobrem o que falta.`;
   else dica = `Faltam ${brl(falta)}. Planos anuais aceleram a meta: ${Math.ceil(falta / POL.planoAnualValor)} anual(is) cobrem o que falta.`;
 
   $('metaContent').innerHTML = `
@@ -462,10 +469,11 @@ function renderMeta(t) {
         <div>${status}</div>
       </div>
       ${bar(m3 ? total / m3 * 100 : 0, f >= 1 ? 'green' : total >= m1 * .7 ? 'amber' : 'red')}
-      <div class="marks"><span style="left:${m1 / m3 * 100}%">M1</span><span style="left:${m2 / m3 * 100}%">M2</span><span style="left:100%">M3</span></div>
+      <div class="marks"><span style="left:${m1 / m3 * 100}%">M<em>eta </em>1</span><span style="left:${m2 / m3 * 100}%">M<em>eta </em>2</span><span style="left:100%">M<em>eta </em>3</span></div>
       <div class="metas">
         ${[[m1, 1], [m2, 2], [m3, 3]].map(([v, i]) => `<div class="meta ${total >= v ? 'hit' : ''}"><div class="t">${total >= v ? '✅ ' : ''}Meta ${i}${i === 3 ? ' · Super' : ''}</div><div class="v">${brl(v)}</div><div class="b">Bônus da equipe: ${brl(POL.bonusMeta[i - 1])}</div></div>`).join('')}
       </div>
+      <div style="margin-top:12px;font-size:.82rem;color:var(--muted)">📅 <strong style="color:var(--text)">Qualidade da venda:</strong> ${t.qualPct == null ? 'aparece após a primeira apuração' : `<strong style="color:var(--text)">${pct(t.qualPct)}% anuais</strong> · ${t.qualAnuais} de ${t.qualBase} planos (novos + rematrículas + renovações) · ${t.totalAnuais} em vendas e ${Math.min(t.renovAnuais, t.renovFeitos)} em renovações`}</div>
     </div>
 
     <div class="tip"><strong>💡 Dica do dia</strong>${esc(dica)}</div>
@@ -475,7 +483,7 @@ function renderMeta(t) {
         <h2>📆 Quanto precisamos por dia</h2>
         <div class="sub">O que falta para cada meta dividido pelos <strong>${cal.restantes} dias úteis</strong> restantes (sem sábados, domingos e feriados) e pelas ${n} consultoras.</div>
         <div class="table-wrap"><table>
-          <tr><th>Meta</th><th>Cada vendedora / dia</th><th>Equipe / dia</th><th>Falta</th></tr>
+          <tr><th>Meta</th><th>Falta</th><th>Equipe / dia</th><th>Cada vendedora / dia</th></tr>
           ${linhaDia('Meta 1', m1)}${linhaDia('Meta 2', m2)}${linhaDia('Meta 3', m3)}
         </table></div>
       </div>
@@ -485,7 +493,7 @@ function renderMeta(t) {
         <div class="grid" style="grid-template-columns:repeat(2,1fr)">
           ${kpi('Dias úteis', `${cal.decorridos}/${cal.totais}`, 'já trabalhados / total')}
           ${kpi('Média por dia útil', brl(cal.ritmo), 'ritmo atual da equipe')}
-          ${cal.temProj ? kpi('Projeção do mês', brl(proj), fProj ? 'bate a Meta ' + fProj : 'abaixo da Meta 1', fProj ? 'ok' : 'bad') : kpi('Projeção do mês', '—', 'aparece após 3 dias úteis de apuração')}
+          ${kpi('Projeção do mês', brl(proj), fProj ? 'bate a Meta ' + fProj : 'abaixo da Meta 1', fProj ? 'ok' : 'bad')}
           ${kpi('Dias restantes', cal.restantes, 'dias úteis')}
         </div>
       </div>
@@ -495,11 +503,11 @@ function renderMeta(t) {
       <h2>🏆 Ranking — Top vendedora do mês</h2>
       <div class="sub">Por valor vendido. A participação de cada uma define a fatia do bônus da meta.</div>
       ${total === 0 ? '<div class="empty">O ranking aparece após a primeira apuração.</div>' : `<div class="rank">
-        ${rank.map((p, i) => { const part = t.totalEquipe ? p.v / t.totalEquipe * 100 : 0; return `<div class="rank-item ${i === 0 && p.v > 0 ? 'first' : ''}">
+        ${rank.map((p, i) => { const part = t.totalMes ? p.v / t.totalMes * 100 : 0; return `<div class="rank-item ${i === 0 && p.v > 0 ? 'first' : ''}">
           <div class="pos">${p.v > 0 ? (medal[i] || (i + 1) + 'º') : '—'}</div>
-          <div><div class="nm">${esc(p.nome)}</div><div class="sm">${pct(part)}% das vendas das consultoras · ${p.vendas} novos ativos</div>${bar(part, 'dark', 'mini')}</div>
+          <div><div class="nm">${esc(p.nome)}</div><div class="sm">${pct(part)}% do total da unidade · ${p.vendas} novos ativos · ${p.anuais} anuais</div>${bar(part, 'dark', 'mini')}</div>
           <div class="rv">${brl(p.v)}${f ? `<div class="sm ok">+${brl(bonusMeta(p.v, t))} bônus meta</div>` : ''}</div></div>`; }).join('')}
-        <div class="rank-item" style="background:var(--soft)"><div class="pos">➕</div><div><div class="nm">Outros (líder / outros)</div><div class="sm">Conta para a meta coletiva, sem bônus de consultora</div></div><div class="rv">${brl(t.outros.v)}</div></div>
+        <div class="rank-item" style="background:var(--soft)"><div class="pos">➕</div><div><div class="nm">Outros (líder / outros)</div><div class="sm">${pct(t.totalMes ? t.outros.v / t.totalMes * 100 : 0)}% do total · conta para a meta, mas essa fatia do bônus não é paga a ninguém</div></div><div class="rv">${brl(t.outros.v)}</div></div>
       </div>`}
     </div>`;
 }
@@ -516,7 +524,7 @@ function renderAtivos(t) {
         ${kpi('Total da unidade', t.totalVendas, 'consultoras + outros')}
         ${kpi('Consultoras', t.vendasEquipe, 'geram bônus individual')}
         ${kpi('Outros', t.outros.vendas, 'contam para a unidade')}
-        ${kpi('Planos anuais', `${t.totalAnuais} <span style="font-size:.9rem;color:var(--muted)">(${pct(qual)}%)</span>`, 'meta de qualidade: 70%', qual >= 70 ? 'ok' : qual >= 50 ? 'warn' : 'bad')}
+        ${kpi('Planos anuais', `${t.totalAnuais} <span style="font-size:.9rem;color:var(--muted)">(${pct(qual)}%)</span>`, 'dos novos + rematrículas')}
       </div>
     </div>
     <div class="grid">
@@ -530,7 +538,6 @@ function renderAtivos(t) {
           <div class="row" style="margin-top:6px"><span class="lbl">Novas vendas</span><span class="val">${p.novas}</span></div>
           <div class="row"><span class="lbl">Rematrículas</span><span class="val">${p.remat}</span></div>
           <div class="row"><span class="lbl">Planos anuais</span><span class="val">${p.anuais} (${pct(p.vendas ? p.anuais / p.vendas * 100 : 0)}%)</span></div>
-          ${okMin ? '' : `<div class="alert red" style="margin:8px 0 0">Faltam ${POL.minimoIdeal - p.vendas} para o mínimo de ${POL.minimoIdeal} — abaixo disso a vaga não se paga.</div>`}
         </div>`; }).join('')}
     </div>
     <details class="pol"><summary>📋 Como funciona o bônus de novos ativos</summary>
@@ -608,7 +615,7 @@ function renderFolha(t) {
       <div class="head"><div class="nome">${esc(p.nome)}</div></div>
       <div class="big ${tot ? 'ok' : 'bad'}" style="font-size:2rem">R$ ${fmt2(tot)}</div>
       <div style="font-size:.78rem;color:var(--muted);margin-bottom:6px">total a receber em bônus</div>
-      <div class="row"><span class="lbl">Meta financeira ${f ? '(Meta ' + f + ' · ' + pct(t.totalEquipe ? p.v / t.totalEquipe * 100 : 0) + '%)' : '(não atingida)'}</span><span class="val">R$ ${fmt2(bm)}</span></div>
+      <div class="row"><span class="lbl">Meta financeira ${f ? '(Meta ' + f + ' · ' + pct(t.totalMes ? p.v / t.totalMes * 100 : 0) + '%)' : '(não atingida)'}</span><span class="val">R$ ${fmt2(bm)}</span></div>
       <div class="row"><span class="lbl">Novos ativos (${p.vendas})</span><span class="val">${brl(bv)}</span></div>
       <div class="row"><span class="lbl">Renovação da unidade ${t.taxaRenov == null ? '' : '(' + pct(t.taxaRenov) + '%)'}</span><span class="val">${brl(bR)}</span></div>
       <div class="row"><span class="lbl">Avaliações (${p.aval} × R$ ${POL.aval})</span><span class="val">${brl(ba)}</span></div>
@@ -624,7 +631,7 @@ function renderFolha(t) {
     <div class="grid">${cards}</div>
     <details class="pol"><summary>📋 Política de bonificação — consultoras</summary>
       <ul class="policy">
-        <li><strong>Meta financeira:</strong> Meta 1 → R$ 400 · Meta 2 → R$ 700 · Meta 3 → R$ 1.000, divididos pela participação de cada consultora no total vendido pelas consultoras.</li>
+        <li><strong>Meta financeira:</strong> Meta 1 → R$ 400 · Meta 2 → R$ 700 · Meta 3 → R$ 1.000, rateados pela participação de cada consultora no total vendido pela unidade (ex.: fez 50% do total → recebe 50% do bônus). A fatia de Outros não gera bônus individual.</li>
         <li><strong>Novos ativos:</strong> R$ 100 a cada 15 (novas + rematrículas). Sobra de 10 a 14 acima de um bloco = R$ 5 por venda. Abaixo de 15 = R$ 0.</li>
         <li><strong>Renovação:</strong> taxa da unidade ≥ 70% → R$ 50 · ≥ 85% → R$ 100 para cada consultora.</li>
         <li><strong>Avaliações:</strong> R$ 10 por avaliação vendida.</li>
@@ -679,7 +686,7 @@ async function renderLider() {
       </div>` : '<div class="empty">Lance os ativos do dia 01 para ver o crescimento.</div>'}
     </div>
 
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr))">
+    <div class="grid-2">
       <div class="card">
         <h2>🎯 Meta financeira da unidade ${st(F.bonus)}</h2>
         <div class="big" style="font-size:1.8rem">${brl(F.total)}</div>
@@ -753,6 +760,7 @@ function renderPreencher() {
         <div class="field"><label for="ativos_inicio">Ativos no dia 01 (fixo no mês)</label>${intIn('ativos_inicio', num(L.ativos_inicio))}</div>
         <div class="field"><label for="renovTotal">Renovações previstas (fixo no mês)</label>${intIn('renovTotal', num(L.renovTotal))}</div>
         <div class="field"><label for="renovFeitos">Renovações feitas (acumulado)</label>${intIn('renovFeitos', num(L.renovFeitos))}</div>
+        <div class="field"><label for="renovAnuais">Renovações em plano anual (acumulado)</label>${intIn('renovAnuais', num(L.renovAnuais))}</div>
         <div class="field"><label for="cancelamentos">Cancelamentos (acumulado)</label>${intIn('cancelamentos', num(L.cancelamentos))}</div>
       </div>
       <button class="btn btn-dark" id="btnSalvar" onclick="saveData()" style="margin-top:10px">💾 Salvar apuração</button>
@@ -777,7 +785,7 @@ async function saveData() {
   if (!dIso || dIso < $('fill_data').min || dIso > $('fill_data').max) { msg.innerHTML = '<div class="alert red">Escolha uma data dentro de ' + esc(rotulo(currentMonth)) + '.</div>'; return; }
   const [y, m, d] = dIso.split('-'), val = id => Math.max(num(($(id) || {}).value), 0);
   const dados = { nome, data: d + '/' + m + '/' + y, hora: new Date().toTimeString().slice(0, 5) };
-  ['ov', 'o_novas', 'o_remat', 'op', 'o_aval', 'ou_prod', 'renovTotal', 'renovFeitos', 'ativos_inicio', 'cancelamentos'].forEach(f => dados[f] = val(f));
+  ['ov', 'o_novas', 'o_remat', 'op', 'o_aval', 'ou_prod', 'renovTotal', 'renovFeitos', 'renovAnuais', 'ativos_inicio', 'cancelamentos'].forEach(f => dados[f] = val(f));
   SLOTS.forEach(c => { ['v', 'novas', 'remat', 'p', 'aval', 'prod'].forEach(f => dados['c' + c.k + '_' + f] = val('c' + c.k + '_' + f)); dados['c' + c.k + '_nome'] = c.nome; });
   const b = $('btnSalvar'); b.disabled = true; b.textContent = 'Salvando...';
   try {
