@@ -243,6 +243,11 @@ const confettiShown = {};
 
 // ==================== UTILITÁRIOS ====================
 const $ = id => document.getElementById(id);
+// Lançamento real (carimbado pelo servidor).
+function lancTxt(r) { if (!r) return ''; return r.lancado_em ? String(r.lancado_em).replace(' ', ' às ') : ''; }  // apurações antigas não têm o carimbo real
+function dBR(t) { const m = String(t || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; }
+function atrasoDias(r) { const a = dBR(r && r.data), b = dBR(r && r.lancado_em); return a && b ? Math.round((b - a) / 864e5) : null; }
+function atrasoChip(r) { const n = atrasoDias(r); if (n == null || n <= 0) return ''; return ` <span class="chip ${n >= 2 ? 'amber' : 'gray'}">+${n} dia${n > 1 ? 's' : ''}</span>`; }
 const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function num(v) {
   if (typeof v === 'number') return isFinite(v) ? v : 0;
@@ -350,7 +355,7 @@ async function loadMonth() {
     if (!Array.isArray(regs)) throw new Error((regs && regs.msg) || 'mês indisponível');
     cfg = c && c.ok ? c : null; records = regs; SLOTS = slotsDe(cfg, records[0]);
     const r0 = records[0];
-    $('monthStatus').innerHTML = (cfg && cfg.consulta ? `<span class="chip amber">🔒 Mês fechado · consulta até ${esc(cfg.consultaAte)}</span> ` : '') + esc(r0 ? `Última apuração: ${r0.nome || '—'} · ${r0.data || ''}${r0.hora ? ' às ' + r0.hora : ''}` : 'Nenhuma apuração neste mês ainda');
+    $('monthStatus').innerHTML = (cfg && cfg.consulta ? `<span class="chip amber">🔒 Mês fechado · consulta até ${esc(cfg.consultaAte)}</span> ` : '') + esc(r0 ? `Dados até ${r0.data || '—'} · lançado por ${r0.nome || '—'}${lancTxt(r0) ? ' em ' + lancTxt(r0) : ''}` : 'Nenhuma apuração neste mês ainda');
     document.querySelectorAll('#nav .lock').forEach(l => { if (cfg && cfg.consulta) l.textContent = '🔒'; });
     if (isUnlocked && cfg && cfg.consulta) setUnlocked(false);
     else if (isUnlocked && anterior && anterior !== currentMonth) {   // senha é por mês
@@ -672,7 +677,7 @@ async function renderLider() {
   el.innerHTML = `
     <div class="card" style="border-top:4px solid var(--brand)">
       <h2>👑 Resultado da líder — ${esc(rotulo(currentMonth))}</h2>
-      <div class="sub">A líder responde pelo todo da unidade: consultoras + outros. ${r.temDados ? 'Base: apuração de ' + esc(r.ultimo.data) + (r.ultimo.hora ? ' às ' + esc(r.ultimo.hora) : '') + '.' : 'Ainda não há apurações neste mês.'}</div>
+      <div class="sub">A líder responde pelo todo da unidade: consultoras + outros. ${r.temDados ? 'Base: dados até ' + esc(r.ultimo.data) + (lancTxt(r.ultimo) ? ' (lançado em ' + esc(lancTxt(r.ultimo)) + ')' : '') + '.' : 'Ainda não há apurações neste mês.'}</div>
       <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
         <div><div class="big ok">${brl(r.totalFolha)}</div><div style="font-size:.85rem;color:var(--muted)">bônus total da líder no mês</div></div>
         <span class="chip blue">📦 Crédito produtos: R$ ${fmt2(r.credito)} (1% de R$ ${fmt2(r.produtos)})</span>
@@ -772,11 +777,13 @@ function renderPreencher() {
     </div>
     <div class="card">
       <h2>📜 Histórico de apurações</h2>
-      <div class="sub">Cada linha é uma apuração (valores acumulados até aquele dia). O painel usa sempre a de data mais recente.</div>
+      <div class="sub">Cada linha é uma apuração (valores acumulados até aquele dia). O painel usa sempre a de data mais recente. <strong>Dados de</strong> = dia a que os números se referem · <strong>Lançado em</strong> = momento real em que a líder salvou (registrado automaticamente, não pode ser alterado).</div>
+      ${(() => { const ult = records.map(r => dBR(r.lancado_em)).filter(Boolean).sort((a, b) => b - a)[0]; if (!ult) return ''; const hoje = new Date(); hoje.setHours(0, 0, 0, 0); const n = Math.round((hoje - ult) / 864e5);
+        return `<div class="alert ${n >= 2 ? 'amber' : 'green'}" style="margin:8px 0">${n <= 0 ? '✅ Último lançamento feito hoje.' : n === 1 ? '🕒 Último lançamento foi ontem.' : '⚠️ ' + n + ' dias sem lançamento.'}</div>`; })()}
       ${records.length ? `<div class="table-wrap"><table>
-        <tr><th>Data</th><th>Hora</th><th>Quem</th>${SLOTS.map(c => `<th>${esc(c.nome)}</th>`).join('')}<th>Outros</th><th>Total</th><th>Novos ativos</th><th>Renov.</th><th>Canc.</th></tr>
+        <tr><th>Dados de</th><th>Lançado em</th><th>Quem</th>${SLOTS.map(c => `<th>${esc(c.nome)}</th>`).join('')}<th>Outros</th><th>Total</th><th>Novos ativos</th><th>Renov.</th><th>Canc.</th></tr>
         ${records.map(r => { let nv = num(r.o_novas) + num(r.o_remat); for (let k = 1; k <= 6; k++) nv += num(r['c' + k + '_novas']) + num(r['c' + k + '_remat']);
-          return `<tr><td>${esc(r.data || '—')}</td><td>${esc(r.hora || '')}</td><td>${esc(r.nome || '—')}</td>${SLOTS.map(c => `<td>${brl(num(r['c' + c.k + '_v']))}</td>`).join('')}<td>${brl(num(r.ov))}</td><td><strong>${brl(num(r.total))}</strong></td><td>${nv}</td><td>${fmt(num(r.renovFeitos))}/${fmt(num(r.renovTotal))}</td><td>${fmt(num(r.cancelamentos))}</td></tr>`; }).join('')}
+          return `<tr><td>${esc(r.data || '—')}</td><td style="white-space:nowrap">${esc(lancTxt(r) || '—')}${atrasoChip(r)}</td><td>${esc(r.nome || '—')}</td>${SLOTS.map(c => `<td>${brl(num(r['c' + c.k + '_v']))}</td>`).join('')}<td>${brl(num(r.ov))}</td><td><strong>${brl(num(r.total))}</strong></td><td>${nv}</td><td>${fmt(num(r.renovFeitos))}/${fmt(num(r.renovTotal))}</td><td>${fmt(num(r.cancelamentos))}</td></tr>`; }).join('')}
       </table></div>` : '<div class="empty">Nenhuma apuração neste mês ainda.</div>'}
     </div>`;
   document.querySelectorAll('#preencherContent input.money').forEach(i => {
