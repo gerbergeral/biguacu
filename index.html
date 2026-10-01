@@ -3,1184 +3,1123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Comercial — Gerber Biguaçu</title>
+<title>Biguaçu — Gerber Academia</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--azul:#2d7ef7;--verde:#16a34a;--verm:#dc2626;--amber:#d97706;--txt:#f0f6ff;--txt2:#8ba8d4;--txt3:#4e6d9a;--txt-b:#0f1e35;--txt2-b:#4a6080;--borda:rgba(255,255,255,.12);--borda2:rgba(255,255,255,.22);}
-body{font-family:'Sora',sans-serif;background:linear-gradient(170deg,#0a1628 0%,#0e2040 50%,#0f2545 100%);min-height:100vh;padding-bottom:3rem;color:var(--txt);font-size:14px}
-.overlay{position:fixed;inset:0;background:rgba(7,21,43,.97);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
-.sbox{background:linear-gradient(135deg,#112d62,#1a4a9e);border-radius:20px;padding:2rem;width:90%;max-width:360px;border:1px solid rgba(45,126,247,.3);box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center}
-.sbox-icon{font-size:36px;margin-bottom:.5rem}
-.sbox-title{font-size:20px;font-weight:800;color:#fff;margin-bottom:4px}
-.sbox-sub{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:1.5rem;font-weight:500}
-.sbox-inp{width:100%;font-family:'Sora',sans-serif;font-size:16px;font-weight:600;padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;outline:none;text-align:center;letter-spacing:.12em;margin-bottom:10px;transition:all .2s}
-.sbox-inp:focus{border-color:rgba(45,126,247,.7);background:rgba(255,255,255,.13)}
-.sbox-btn{width:100%;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;cursor:pointer;margin-bottom:10px;transition:all .2s}
-.sbox-btn:disabled{opacity:.6;cursor:wait}
-.sbox-ver{font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:underline;font-weight:500;background:none;border:none;font-family:'Sora',sans-serif}
-.sbox-err{font-size:12px;color:#f87171;margin-bottom:8px;font-weight:600;display:none}
-.header{background:linear-gradient(180deg,rgba(10,22,48,1),rgba(14,32,64,.95));padding:1.25rem 1rem 1rem;text-align:center;border-bottom:1px solid var(--borda)}
-.hcity{font-size:24px;font-weight:800;color:#fff;margin-bottom:2px}
-.hinfo{font-size:12px;color:var(--txt2)}
-.modobar{background:rgba(45,126,247,.15);border-bottom:1px solid rgba(45,126,247,.25);padding:7px 1rem;display:none;justify-content:center;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,.7);font-weight:600}
-.btsm{font-size:11px;font-weight:700;padding:4px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-family:'Sora',sans-serif}
-.wrap{max-width:720px;margin:0 auto;padding:0 1rem}
-.sync{display:flex;align-items:center;gap:7px;padding:.5rem 0;margin:.75rem 0 .25rem;font-size:12px;color:var(--txt2)}
-.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--txt3)}
-.sdot.ok{background:#22c55e}.sdot.err{background:#ef4444}.sdot.spin{background:#f59e0b;animation:pl 1s infinite}
-@keyframes pl{0%,100%{opacity:1}50%{opacity:.3}}
-.mesbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:8px 12px;margin-bottom:.75rem}
-.mesbar-lbl{font-size:12px;color:#fbbf24;font-weight:700}
-.mesbar select{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;border:1px solid rgba(245,158,11,.4);background:#1a2e50;color:#fbbf24;outline:none;cursor:pointer;flex:1;min-width:150px}
-.stbadge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;letter-spacing:.05em}
-.st-aberto{background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.4)}
-.st-fechado{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.4)}
-.st-sem{background:rgba(255,255,255,.08);color:var(--txt2);border:1px solid var(--borda)}
-.lockbox{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:12px;padding:10px 14px;margin-bottom:.875rem;font-size:12px;color:#fca5a5;font-weight:600}
-.tabs{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:14px;padding:5px;margin-bottom:1.1rem;border:1px solid var(--borda);overflow-x:auto}
-.tab{flex:1 0 auto;padding:9px 10px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--txt2);border:none;background:transparent;font-family:'Sora',sans-serif;transition:all .2s;text-align:center;white-space:nowrap}
-.tab.active{background:#fff;color:#0f1e35;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.tab.hid{display:none}
-.page{display:none}.page.active{display:block}
-.card{background:#fff;border-radius:18px;padding:1.3rem;margin-bottom:.875rem;color:var(--txt-b);box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.ctitle{font-size:11px;font-weight:700;color:var(--txt2-b);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
-.cdark{background:linear-gradient(135deg,#0a1e40,#112d62);border-radius:18px;padding:1.3rem;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.2)}
-.motiv{background:linear-gradient(135deg,#112d62,#1a4a9e);border-radius:18px;padding:1.3rem;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.3)}
-.mv-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:3px}
-.mv-data{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:10px}
-.mv-frase{font-size:13px;line-height:1.65;color:rgba(255,255,255,.88);font-style:italic;padding:10px 13px;background:rgba(255,255,255,.08);border-radius:11px;border-left:3px solid rgba(45,126,247,.6);margin-bottom:10px}
-.mv-tip{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:8px 11px;font-size:12px;color:#fbbf24;font-weight:600}
-.contagem{display:flex;gap:8px;margin-top:10px}
-.ci{flex:1;background:rgba(255,255,255,.1);border-radius:10px;padding:8px;text-align:center;border:1px solid rgba(255,255,255,.1)}
-.ci-n{font-size:20px;font-weight:800;color:#fff}
-.ci-l{font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
-.prog-total{font-size:38px;font-weight:800;line-height:1;margin-bottom:4px}
-.prog-sub{font-size:13px;margin-bottom:10px;display:flex;justify-content:space-between;font-weight:500}
-.bar{height:14px;border-radius:99px;overflow:visible;position:relative;margin-bottom:6px}
-.bar-ok{background:#e2e8f0}
-.bar-warn{background:#fee2e2}
-.bar-f{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);position:relative}
-.bar-f::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.bf-verde{background:linear-gradient(90deg,#15803d,#22c55e)}.bf-verde::after{background:#22c55e}
-.bf-azul{background:linear-gradient(90deg,#1d4ed8,#3b82f6)}.bf-azul::after{background:#3b82f6}
-.bf-amber{background:linear-gradient(90deg,#b45309,#f59e0b)}.bf-amber::after{background:#f59e0b}
-.bf-verm{background:linear-gradient(90deg,#991b1b,#ef4444)}.bf-verm::after{background:#ef4444}
-.marcadores{position:relative;height:20px;margin-top:4px}
-.marc{position:absolute;transform:translateX(-50%)}
-.marc-line{width:1px;height:5px;background:#cbd5e1;margin:0 auto 2px}
-.marc-lbl{font-size:10px;white-space:nowrap;font-weight:600;text-align:center}
-.falta-lbl{font-size:13px;margin-top:6px;font-weight:500}
-.fd{font-weight:800}
-.mbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.875rem}
-.mb{border-radius:14px;padding:12px 10px;text-align:center;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);position:relative;overflow:hidden;transition:all .3s}
-.mb::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.mb.t1::after{background:#22c55e}.mb.t2::after{background:#3b82f6}.mb.ts::after{background:linear-gradient(90deg,#f59e0b,#ef4444)}
-.mb.on1{background:rgba(34,197,94,.13);border-color:rgba(34,197,94,.4)}
-.mb.on2{background:rgba(59,130,246,.13);border-color:rgba(59,130,246,.4)}
-.mb.ons{background:rgba(245,158,11,.13);border-color:rgba(245,158,11,.4)}
-.mb-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:5px}
-.mb-val{font-size:18px;font-weight:800;color:#fff}
-.mb-bon{font-size:11px;margin-top:3px;color:rgba(255,255,255,.45);font-weight:600}
-.sc{border-radius:16px;padding:1.2rem;text-align:center;margin-bottom:.875rem;transition:all .3s;border:1px solid var(--borda)}
-.sc-i{background:linear-gradient(135deg,#78350f,#b45309);color:#fff}
-.sc-v{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;border-color:rgba(34,197,94,.3);box-shadow:0 4px 20px rgba(22,163,74,.25)}
-.sc-a{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;border-color:rgba(59,130,246,.3);box-shadow:0 4px 20px rgba(37,99,235,.25)}
-.sc-o{background:linear-gradient(135deg,#78350f,#d97706);color:#fff;border-color:rgba(217,119,6,.3);box-shadow:0 4px 20px rgba(217,119,6,.25)}
-.sc-r{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;border-color:rgba(220,38,38,.3);box-shadow:0 4px 20px rgba(220,38,38,.25);animation:pulsared 2s infinite}
-@keyframes pulsared{0%,100%{box-shadow:0 4px 20px rgba(220,38,38,.25)}50%{box-shadow:0 4px 40px rgba(220,38,38,.6)}}
-.sc-icon{font-size:28px;margin-bottom:5px}.sc-msg{font-size:16px;font-weight:800}.sc-sub{font-size:12px;margin-top:3px;opacity:.85;font-weight:500}
-.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
-.bi{background:rgba(255,255,255,.07);border-radius:11px;padding:10px 8px;text-align:center;border:1px solid rgba(255,255,255,.1);transition:all .3s}
-.bi.on{background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45)}
-.bi-tag{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px}
-.bi.on .bi-tag{color:#f59e0b}
-.bi-val{font-size:15px;font-weight:800;color:rgba(255,255,255,.25)}
-.bi.on .bi-val{color:#f59e0b}
-.bi-sub{font-size:10px;color:rgba(255,255,255,.2);margin-top:2px}
-.bi.on .bi-sub{color:rgba(245,158,11,.6)}
-.brow{border-radius:10px;padding:10px 13px;display:flex;justify-content:space-between;align-items:center;border:1px solid;gap:8px}
-.brow-nenhum{background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.3)}
-.brow-ok{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08)}
-.brow-lbl{font-size:12px;font-weight:500}
-.brow-nenhum .brow-lbl{color:#fca5a5}
-.brow-ok .brow-lbl{color:var(--txt2)}
-.brow-none-val{font-size:12px;font-weight:700;color:#f87171}
-.brow-ok-val{font-size:15px;font-weight:800;color:#f59e0b}
-.cg3{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:.875rem}
-.cc{background:#fff;border-radius:16px;padding:1.1rem;color:var(--txt-b);box-shadow:0 2px 10px rgba(0,0,0,.07);min-width:0}
-.cc.out{border:2px dashed #c4b5fd}
-.av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;margin-bottom:8px}
-.al{background:#dbeafe;color:#1e3a8a}.da{background:#dcfce7;color:#14532d}.out2{background:#ede9fe;color:#5b21b6}
-.cn{font-size:14px;font-weight:700;color:var(--txt-b)}
-.cs{font-size:11px;color:var(--txt2-b);margin-bottom:8px;font-weight:500}
-.nb{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:#ede9fe;color:#5b21b6;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
-.dv{height:1px;background:#e8eef5;margin:8px 0}
-.sl{font-size:10px;color:var(--txt2-b);font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
-.sv{font-size:18px;font-weight:800;color:#0f172a}
-.ss{font-size:11px;color:var(--txt2-b);margin-top:1px}
-.anuais-card{background:linear-gradient(135deg,#1e3a5f,#1a4a8a);border-radius:14px;padding:12px 15px;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.25)}
-.anuais-titulo{font-size:11px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-.anuais-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-.anuais-item{background:rgba(255,255,255,.08);border-radius:10px;padding:10px;text-align:center;border:1px solid rgba(255,255,255,.1)}
-.anuais-num{font-size:22px;font-weight:800;color:#7dd3fc}
-.anuais-lbl{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px}
-.anuais-nota{font-size:11px;color:rgba(255,255,255,.4);margin-top:8px;text-align:center;font-style:italic}
-.renov-pct{font-size:34px;font-weight:800;color:#0f172a}
-.renov-bar-bg{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:8px 0}
-.renov-bar-f{height:100%;border-radius:99px;transition:width .5s;background:linear-gradient(90deg,#dc2626,#f87171)}
-.renov-bar-f.ok70{background:linear-gradient(90deg,#b45309,#f59e0b)}
-.renov-bar-f.ok85{background:linear-gradient(90deg,#15803d,#22c55e)}
-.renov-badges{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-.rb{border-radius:12px;padding:10px 12px;border:1.5px solid #e2e8f0;transition:all .3s}
-.rb.on70{background:#fffbeb;border-color:#fbbf24}
-.rb.on85{background:#f0fdf4;border-color:#86efac}
-.rb-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2-b);margin-bottom:3px}
-.rb.on70 .rb-tag{color:#92400e}.rb.on85 .rb-tag{color:#166534}
-.rb-val{font-size:15px;font-weight:800;color:var(--txt2-b)}
-.rb.on70 .rb-val{color:#92400e}.rb.on85 .rb-val{color:#166534}
-.rb-sub{font-size:11px;color:var(--txt2-b);margin-top:1px}
-.remg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:10px}
-.rc{border-radius:14px;border:2px solid #e8eef5;padding:1rem;background:#f4f7fb;min-width:0}
-.rn{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.rav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;flex-shrink:0}
-.rnm{font-size:13px;font-weight:700;color:var(--txt-b)}
-.rl{display:flex;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px solid #e8eef5;font-size:12px}
-.rl:last-of-type{border:none}
-.rlbl{color:var(--txt2-b);font-weight:500}.rv{font-weight:700;color:#0f172a;white-space:nowrap}
-.rtlbl{font-size:10px;color:var(--txt2-b);font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px;margin-bottom:2px}
-.rtotal{font-size:20px;font-weight:800;color:#16a34a}
-.eqrow{display:flex;justify-content:space-between;align-items:center;background:#f0fdf4;border-radius:10px;padding:10px 13px;border:1px solid #86efac}
-.eqlbl{font-size:13px;color:#166534;font-weight:600}.eqval{font-size:20px;font-weight:800;color:#166534}
-.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:10px}
-.fc{border-radius:16px;padding:1.2rem;color:#fff;min-width:0}
-.fc-al{background:linear-gradient(135deg,#0f2d5a,#1e5fc4);box-shadow:0 4px 16px rgba(30,95,196,.3)}
-.fc-da{background:linear-gradient(135deg,#052e16,#16a34a);box-shadow:0 4px 16px rgba(22,163,74,.3)}
-.fc-nome{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.fc-av{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;flex-shrink:0}
-.fcl{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:12px}
-.fclbl{color:rgba(255,255,255,.6);font-weight:500}.fcv{font-weight:700}
-.fctlbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.07em;margin-top:9px;margin-bottom:2px;font-weight:700}
-.fctotal{font-size:24px;font-weight:800;color:#fbbf24}
-.fccred{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px}
-.fgeral{background:#f0fdf4;border:1.5px solid #86efac;border-radius:13px;padding:12px 15px;display:flex;justify-content:space-between;align-items:center}
-.fgeral-lbl{font-size:13px;color:#166534;font-weight:700}.fgeral-val{font-size:22px;font-weight:800;color:#166534}
-.reta{border-radius:16px;padding:1.3rem;text-align:center;margin-bottom:.875rem;transition:all .3s}
-.reta-ok{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;box-shadow:0 4px 20px rgba(22,163,74,.25)}
-.reta-neg{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;animation:pulsared 2s infinite}
-.reta-neu{background:linear-gradient(135deg,#78350f,#d97706);color:#fff}
-.reta-vazio{background:rgba(255,255,255,.05);border:1px solid var(--borda);color:var(--txt2)}
-.reta-icon{font-size:36px;margin-bottom:6px}.reta-msg{font-size:18px;font-weight:800;margin-bottom:4px}
-.reta-sub{font-size:13px;opacity:.85;font-weight:500}.reta-pct{font-size:26px;font-weight:800;margin-top:8px}
-.retg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:.875rem}
-.retc{background:#fff;border-radius:16px;padding:1.2rem;color:var(--txt-b);box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.ret-num{font-size:30px;font-weight:800;color:#0f172a;line-height:1;margin-bottom:3px}
-.ret-lbl{font-size:11px;color:var(--txt2-b);font-weight:600;text-transform:uppercase;letter-spacing:.07em}
-.ret-hint{font-size:11px;color:var(--txt2-b);margin-top:3px}
-.rpos{color:#16a34a}.rneg{color:#dc2626}.rneu2{color:#d97706}
-.rpg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.875rem}
-.rpc{border-radius:14px;padding:12px;text-align:center;border:1.5px solid}
-.rpc-can{background:#fef2f2;border-color:#fca5a5}
-.rpc-nr{background:#fff7ed;border-color:#fed7aa}
-.rpc-tot{background:#f8fafc;border-color:#cbd5e1}
-.rpc-num{font-size:22px;font-weight:800}
-.rpc-can .rpc-num{color:#dc2626}.rpc-nr .rpc-num{color:#d97706}.rpc-tot .rpc-num{color:#475569}
-.rpc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
-.rpc-can .rpc-lbl{color:#dc2626}.rpc-nr .rpc-lbl{color:#d97706}.rpc-tot .rpc-lbl{color:#475569}
-.pb{background:linear-gradient(135deg,#3d1007,#7c2010);border-radius:18px;padding:1.3rem;margin-bottom:.875rem;border:1px solid rgba(251,146,60,.2)}
-.pb-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.pb-tot{font-size:30px;font-weight:800;color:#fff}
-.pb-cl{font-size:10px;color:rgba(255,255,255,.5);margin-bottom:2px;font-weight:600;text-transform:uppercase}
-.pb-cv{font-size:18px;font-weight:800;color:#fdba74}
-.pg3{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:.75rem}
-.pc{background:#fff;border-radius:15px;padding:1rem;color:var(--txt-b);box-shadow:0 2px 10px rgba(0,0,0,.07);min-width:0}
-.pc.out{border:2px dashed #c4b5fd}
-.pcn{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.pcd{height:1px;background:#e8eef5;margin:8px 0}
-.pcr{display:flex;justify-content:space-between;font-size:13px;gap:6px}
-.pcr-lbl{color:var(--txt2-b);font-weight:500}.pcr-val{font-weight:700;color:#0f172a}
-.pcct{display:flex;justify-content:space-between;align-items:center;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:8px;padding:6px 10px;margin-top:7px;gap:6px}
-.pcct-lbl{font-size:11px;color:#c2410c;font-weight:600}.pcct-val{font-size:14px;font-weight:800;color:#c2410c}
-.hbox{background:rgba(255,255,255,.05);border:1px solid var(--borda);border-radius:18px;padding:1.3rem;margin-bottom:.875rem}
-.htop{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.hlist{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow-y:auto}
-.hi{background:rgba(255,255,255,.07);border-radius:11px;padding:10px 12px;border:1px solid var(--borda);display:grid;grid-template-columns:1fr auto;gap:6px;align-items:start}
-.hin{font-size:13px;font-weight:700;color:#fff}.hid{font-size:11px;color:var(--txt3);margin-top:2px}
-.hit{font-size:13px;font-weight:800;color:#f59e0b;text-align:right}.hiv{font-size:11px;color:var(--txt3);text-align:right;margin-top:2px}
-.hvazio{font-size:13px;color:var(--txt3);text-align:center;padding:1rem;font-weight:500}
-.hbtn{font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--borda2);background:rgba(255,255,255,.08);color:var(--txt2);cursor:pointer;font-family:'Sora',sans-serif}
-.coleta-header{background:linear-gradient(135deg,#1e3a5f,#1a4a8a);border-radius:14px;padding:12px 15px;margin-bottom:.875rem;display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(45,126,247,.25)}
-.ch-info{font-size:12px;color:rgba(255,255,255,.6);font-weight:500}
-.sec{font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.1em;text-transform:uppercase;margin:1rem 0 .5rem;display:flex;align-items:center;gap:6px}
-.campo{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.campo label{font-size:11px;color:var(--txt2-b);flex:1;font-weight:600;min-width:0}
-.campo input{width:110px;text-align:right;font-size:13px;font-weight:700;font-family:'Sora',sans-serif;border:2px solid #e2e8f0;border-radius:8px;padding:5px 8px;background:#f4f7fb;color:#0f172a;outline:none;transition:all .2s}
-.campo input:focus{border-color:var(--azul);background:#fff;box-shadow:0 0 0 3px rgba(45,126,247,.1)}
-.cp{background:#fff;border-radius:16px;padding:1.1rem;color:var(--txt-b);box-shadow:0 2px 10px rgba(0,0,0,.07);min-width:0}
-.cp.out{border:2px dashed #c4b5fd}
-.cph{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.cpd{height:1px;background:#e8eef5;margin:8px 0}
-.anuais-coleta{background:linear-gradient(135deg,#0f2040,#132548);border-radius:14px;padding:12px 15px;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.2)}
-.anuais-coleta-titulo{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.anuais-coleta-nota{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:10px;font-style:italic}
-.anuais-coleta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-.acg-item{background:rgba(255,255,255,.06);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.1)}
-.acg-nome{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:6px}
-.acg-item input{width:100%;text-align:center;font-size:18px;font-weight:800;font-family:'Sora',sans-serif;background:transparent;border:2px solid rgba(255,255,255,.2);border-radius:8px;padding:5px;color:#7dd3fc;outline:none}
-.salvar-box{background:linear-gradient(135deg,#112d62,#1a4a9e);border-radius:18px;padding:1.4rem;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.3)}
-.salvar-titulo{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);text-align:center;margin-bottom:.875rem}
-.salvar-row{display:flex;gap:8px}
-.sinp{flex:1;min-width:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:500;padding:11px 14px;border-radius:11px;border:1px solid var(--borda2);background:rgba(255,255,255,.08);color:#fff;outline:none;transition:all .2s}
-.sinp::placeholder{color:var(--txt3)}
-.sinp:focus{border-color:rgba(45,126,247,.7);background:rgba(255,255,255,.12)}
-.sbtn{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;padding:11px 20px;border-radius:11px;border:none;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;cursor:pointer;white-space:nowrap;box-shadow:0 3px 12px rgba(22,163,74,.4);transition:all .2s}
-.sbtn:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.sbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.salvar-ult{text-align:center;margin-top:.625rem;font-size:12px;color:rgba(255,255,255,.45);font-weight:500}
-.salvar-ult strong{color:#7dd3fc}
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#16a34a;color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:99px;opacity:0;transition:all .3s;z-index:10000;pointer-events:none;max-width:92vw;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:.875rem}
-.li-card{background:#fff;border-radius:14px;padding:12px 13px;color:var(--txt-b);border-left:4px solid #cbd5e1;box-shadow:0 2px 10px rgba(0,0,0,.07);min-width:0}
-.li-card.ok{border-left-color:#22c55e}.li-card.no{border-left-color:#ef4444}
-.li-t{font-size:13px;font-weight:800}.li-m{font-size:10px;color:var(--txt2-b);margin:2px 0 8px;line-height:1.4}
-.li-v{font-size:24px;font-weight:800;line-height:1.1}.li-card.ok .li-v{color:#16a34a}.li-card.no .li-v{color:#dc2626}
-.li-s{font-size:11px;color:var(--txt2-b);margin-top:4px}.li-b{font-size:12px;font-weight:800;margin-top:6px}
-.li-card.ok .li-b{color:#16a34a}.li-card.no .li-b{color:#94a3b8}
-.li-total{background:linear-gradient(135deg,#0a1e40,#1a4a9e);border-radius:18px;padding:1.3rem;text-align:center;margin-bottom:.875rem;border:1px solid rgba(45,126,247,.3)}
-.li-total-v{font-size:40px;font-weight:800;color:#fbbf24;line-height:1.1}
-.li-total-d{font-size:12px;color:rgba(255,255,255,.6);margin-top:6px}
-.pol{background:#fffbeb;border-left:4px solid #f59e0b;border-radius:12px;padding:10px 13px;margin-bottom:8px;color:var(--txt-b)}
-.pol b{color:#b45309;font-size:12px}.pol div{font-size:12px;margin-top:3px}.pol small{font-size:10px;color:var(--txt2-b)}
-.min-ok{color:#16a34a!important}.min-no{color:#dc2626!important}
-.rodape{text-align:center;padding:1rem;font-size:11px;color:var(--txt3)}
-#cc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none}
-.celeb{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;text-align:center;pointer-events:none;display:none;animation:cpop .5s cubic-bezier(.17,.67,.35,1.3)}
-@keyframes cpop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-.ce{font-size:64px;display:block;animation:cb 1s infinite alternate}
-@keyframes cb{0%{transform:translateY(0) rotate(-5deg)}100%{transform:translateY(-15px) rotate(5deg)}}
-.cm{font-size:22px;font-weight:800;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.5);margin-top:10px;font-family:'Sora',sans-serif}
-.cs2{font-size:14px;color:rgba(255,255,255,.85);margin-top:5px;font-family:'Sora',sans-serif;font-weight:600}
-@media (max-width:560px){
-  .cg3,.pg3,.anuais-coleta-grid,.remg,.fg{grid-template-columns:1fr}
-  .anuais-grid{grid-template-columns:repeat(2,1fr)}
-  .campo input{width:120px}
+:root {
+  --primary: #0d1b2a;
+  --secondary: #1b2838;
+  --accent: #c44569;
+  --accent2: #0f3460;
+  --gold: #f5a623;
+  --green: #27ae60;
+  --light: #f4f6f8;
+  --dark: #0d1b2a;
+  --card-bg: #ffffff;
+  --text: #2c3e50;
+  --text-light: #6b7c93;
+  --border: #dfe6e9;
+  --shadow: 0 2px 16px rgba(13,27,42,0.08);
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--light); color: var(--text); min-height: 100vh; }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, var(--primary), var(--accent2)); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 16px rgba(13,27,42,0.2); gap: 12px; }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.logo-word { font-weight: 900; letter-spacing: 3px; font-size: 1.05rem; border: 2px solid rgba(255,255,255,.85); padding: 6px 10px; border-radius: 8px; line-height: 1.05; text-align: center; }
+.logo-word small { display: block; font-size: .55rem; letter-spacing: 2px; font-weight: 700; opacity: .85; }
+.header h1 { font-size: 1.3rem; font-weight: 700; margin: 0; }
+.header .branch { font-size: 0.8rem; opacity: 0.8; letter-spacing: 0.5px; }
+.header .greeting { font-size: 0.85rem; font-weight: 600; margin-top: 2px; }
+.header .date-info { font-size: 0.8rem; opacity: 0.8; text-align: right; }
+
+/* NAV */
+.nav { background: var(--secondary); display: flex; overflow-x: auto; border-bottom: 2px solid var(--accent); }
+.nav button { flex: 1; padding: 14px 8px; border: none; background: transparent; color: rgba(255,255,255,0.7); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; min-width: 90px; text-align: center; }
+.nav button:hover { color: white; background: rgba(255,255,255,0.05); }
+.nav button.active { color: white; background: var(--accent); }
+.nav button.hidden-tab { display: none; }
+
+/* MAIN */
+.main { padding: 20px; max-width: 1200px; margin: 0 auto; }
+.tab { display: none; }
+.tab.active { display: block; }
+
+/* CARDS */
+.card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.card h2 { font-size: 1.25rem; color: var(--primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 3px solid var(--accent); display: flex; align-items: center; gap: 10px; font-weight: 700; flex-wrap: wrap; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.person-card { background: linear-gradient(135deg, #f8f9fa, #fff); border-radius: var(--radius); padding: 16px; border-left: 4px solid var(--accent); min-width: 0; }
+.person-card .name { font-weight: 700; font-size: 1rem; color: var(--primary); }
+.person-card .role { font-size: 0.78rem; color: var(--text-light); margin-bottom: 10px; }
+.person-card .value { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+.person-card .label { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+.person-card .sub { font-size: 0.8rem; color: var(--text-light); margin-top: 4px; }
+
+/* PROGRESS */
+.progress-bar { width: 100%; height: 8px; background: #e9ecef; border-radius: 4px; margin-top: 8px; overflow: hidden; }
+.progress-bar .fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.fill.green { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+.fill.gold { background: linear-gradient(90deg, #f39c12, #f5a623); }
+.fill.red { background: linear-gradient(90deg, #e74c3c, #e94560); }
+.fill.blue { background: linear-gradient(90deg, #2980b9, #3498db); }
+
+/* STATS */
+.stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+.stat-item { flex: 1; min-width: 140px; text-align: center; padding: 12px 8px; background: #f8f9fa; border-radius: 8px; }
+.stat-item .stat-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+.stat-item .stat-label { font-size: 0.72rem; color: var(--text-light); text-transform: uppercase; }
+
+/* TABLES */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+th { background: var(--primary); color: white; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+tr:nth-child(even) { background: #f8f9fa; }
+tr:hover { background: #f0f0f0; }
+
+/* FORMS */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--primary); }
+.form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; transition: border 0.2s; }
+.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,69,96,0.1); }
+.btn { padding: 12px 28px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+.btn:disabled { opacity: .6; cursor: wait; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #d63851; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(233,69,96,0.3); }
+.btn-secondary { background: var(--accent2); color: white; }
+.btn-secondary:hover { background: #0c2a4d; }
+.section-title { font-size: 1rem; font-weight: 700; color: var(--primary); margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+.fill-table { width:100%; border-collapse:collapse; margin-top:8px; }
+.fill-table th { background:var(--primary); color:white; padding:8px 10px; font-size:0.78rem; text-align:center; }
+.fill-table td { padding:8px 10px; border-bottom:1px solid #e0e0e0; text-align:center; }
+.fill-table td:first-child { text-align:left; white-space: nowrap; }
+.fill-table input { width:100%; min-width:70px; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:0.9rem; text-align:center; }
+.fill-table input.money { min-width: 110px; text-align: right; }
+.fill-table input:focus { border-color:var(--accent); outline:none; }
+
+/* LOGIN */
+.login-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
+.login-overlay.show { display: flex; }
+.login-box { background: white; padding: 32px; border-radius: var(--radius); width: 100%; max-width: 340px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.login-box h3 { margin-bottom: 16px; color: var(--primary); }
+.login-box input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; font-size: 1rem; }
+
+/* LOADING */
+.loading { text-align: center; padding: 40px; color: var(--text-light); }
+.loading .spinner { display: inline-block; width: 36px; height: 36px; border: 4px solid #e0e0e0; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ALERTS */
+.alert { padding: 12px 16px; border-radius: 8px; margin: 12px 0; font-size: 0.88rem; }
+.alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+.alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+
+/* RANKING */
+.ranking-container { display: flex; gap: 16px; align-items: stretch; justify-content: center; flex-wrap: wrap; }
+.ranking-card { flex: 1; min-width: 220px; max-width: 400px; border-radius: var(--radius); padding: 20px; text-align: center; position: relative; overflow: hidden; transition: transform 0.3s ease; }
+.ranking-card:hover { transform: translateY(-4px); }
+.ranking-card.gold { background: linear-gradient(135deg, #fef9e7, #f9e79f); border: 2px solid var(--gold); box-shadow: 0 4px 20px rgba(245,166,35,0.3); }
+.ranking-card.silver { background: linear-gradient(135deg, #f8f9fa, #e8e8e8); border: 2px solid #c0c0c0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.ranking-card.bronze { background: linear-gradient(135deg, #fbf3ec, #f0d9c4); border: 2px solid #cd7f32; }
+.ranking-card .medal { font-size: 3rem; margin-bottom: 8px; }
+.ranking-card .rank-name { font-size: 1.15rem; font-weight: 700; color: var(--primary); }
+.ranking-card .rank-value { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin: 8px 0; }
+.ranking-card .rank-pct { font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+.ranking-card .rank-detail { font-size: 0.82rem; color: var(--text-light); margin-top: 6px; }
+.ranking-card .rank-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 10px; overflow: hidden; }
+.ranking-card .rank-bar .fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold), #e67e22); }
+.ranking-card.silver .rank-bar .fill { background: linear-gradient(90deg, #bdc3c7, #95a5a6); }
+.ranking-empty { text-align: center; padding: 24px; color: var(--text-light); font-size: 0.9rem; }
+.ranking-empty .big-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+
+/* MONTH SELECTOR */
+.month-bar { background: var(--secondary); color: white; padding: 10px 20px; display: flex; align-items: center; gap: 12px; border-radius: var(--radius); margin-bottom: 16px; flex-wrap: wrap; }
+.month-bar label { font-weight: 600; font-size: 0.9rem; }
+.month-bar select { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; background: white; color: var(--primary); }
+.month-bar button { padding: 8px 18px; font-size: 0.82rem; }
+.month-bar .status { font-size: 0.78rem; opacity: 0.7; }
+.lider-on { background: #27ae60; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: .75rem; font-weight: 700; display: none; }
+
+/* META BADGES */
+.meta-badge { flex:1; min-width:160px; border-radius:var(--radius); padding:14px 16px; text-align:center; border:2px solid; }
+.meta-badge-1 { background:#e8f5e9; border-color:#4caf50; }
+.meta-badge-2 { background:#fff8e1; border-color:#ffa726; }
+.meta-badge-3 { background:#fce4ec; border-color:#e53935; }
+.meta-badge-title { font-size:0.82rem; font-weight:700; margin-bottom:4px; }
+.meta-badge-1 .meta-badge-title { color:#2e7d32; }
+.meta-badge-2 .meta-badge-title { color:#e65100; }
+.meta-badge-3 .meta-badge-title { color:#c62828; }
+.meta-badge-value { font-size:1.1rem; font-weight:700; color:var(--primary); margin-bottom:4px; }
+.meta-badge-pct { font-size:1.4rem; font-weight:700; }
+.meta-badge-1 .meta-badge-pct { color:#2e7d32; }
+.meta-badge-2 .meta-badge-pct { color:#e65100; }
+.meta-badge-3 .meta-badge-pct { color:#c62828; }
+.meta-badge-progress { width:100%; height:6px; background:#e0e0e0; border-radius:3px; margin-top:6px; overflow:hidden; }
+.meta-badge-fill { height:100%; border-radius:3px; transition:width 0.5s; }
+.meta-badge-1 .meta-badge-fill { background:#4caf50; }
+.meta-badge-2 .meta-badge-fill { background:#ffa726; }
+.meta-badge-3 .meta-badge-fill { background:#e53935; }
+
+/* CELEBRAÇÃO */
+.mes-bom-badge { background: linear-gradient(135deg, #1b5e20 0%, #4caf50 50%, #ffd700 100%); color: white; padding: 12px 24px; border-radius: 12px; font-size: 1.3rem; font-weight: 900; text-align: center; margin: 12px 0 16px; animation: mesBomPulse 2s ease-in-out infinite; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); box-shadow: 0 0 30px rgba(76,175,80,0.5), 0 0 60px rgba(255,215,0,0.3); letter-spacing: 2px; }
+@keyframes mesBomPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+.meta-tingida-destaque { animation: metaGlow 1.5s ease-in-out infinite alternate; }
+@keyframes metaGlow { 0% { box-shadow: 0 0 10px rgba(76,175,80,0.5); } 100% { box-shadow: 0 0 25px rgba(76,175,80,0.9), 0 0 50px rgba(255,215,0,0.4); } }
+
+.insight-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; border-radius: var(--radius); margin: 16px 0; font-size: 0.92rem; line-height: 1.5; }
+.insight-box strong { display: block; margin-bottom: 4px; font-size: 1rem; }
+.tip-box { background: #fff9e6; border-left: 4px solid var(--gold); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 0.88rem; line-height: 1.7; }
+.tip-box strong { color: #b7791f; }
+
+#confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+.leader-badge { display: inline-block; background: linear-gradient(135deg, var(--gold), #e67e22); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+.plano-anual { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; padding: 14px 20px; border-radius: var(--radius); margin: 12px 0; }
+.plano-anual strong { font-size: 1.1rem; }
+
+.week-bar { display: flex; gap: 4px; margin: 8px 0; }
+.week-bar .day { flex: 1; min-height: 34px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 600; color: white; text-align: center; padding: 2px; }
+.week-bar .day.done { background: var(--green); }
+.week-bar .day.partial { background: var(--gold); }
+.week-bar .day.miss { background: #e74c3c; }
+.week-bar .day.future { background: #ddd; color: #999; }
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #27ae60; color: #fff; padding: 10px 18px; border-radius: 30px; font-weight: 700; font-size: .85rem; z-index: 2000; display: none; max-width: 92vw; text-align: center; }
+
+@media (max-width: 768px) {
+  .header { flex-direction: column; gap: 6px; text-align: center; }
+  .header-left { flex-direction: column; gap: 6px; }
+  .header .date-info { text-align: center; }
+  .main { padding: 12px; }
+  .card { padding: 14px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .stats-row { flex-direction: column; }
+  .nav button { font-size: 0.72rem; padding: 10px 6px; }
+  .ranking-card { min-width: 100%; }
+  .week-bar .day { font-size: .58rem; }
 }
 </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" style="display:none">
-  <div class="sbox">
-    <div class="sbox-icon">🏋️</div>
-    <div class="sbox-title">Gerber Biguaçu</div>
-    <div class="sbox-sub" id="sboxSub">Área da líder — preenchimento de dados</div>
-    <div class="sbox-err" id="serr"></div>
-    <input class="sbox-inp" type="password" id="sinp" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')entrar()">
-    <button class="sbox-btn" id="btnEntrar" onclick="entrar()">🔐 Entrar para editar</button>
-    <button class="sbox-ver" id="btnVer" onclick="visualizar()">← Voltar ao painel</button>
-  </div>
-</div>
-
-<div class="modobar" id="modobar" style="display:flex">
-  👁️ Painel atualizado em tempo real
-  <button class="btsm" onclick="pedirSenha()">🔐 Área da líder</button>
-</div>
-
-<div class="modobar" id="liderbar" style="background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3)">✏️ Área da líder ativa<button class="btsm" onclick="sairLider()">Sair</button></div>
-
 <div class="header">
-  <div class="hcity">Gerber Biguaçu</div>
-  <div class="hinfo" id="hMes"></div>
-  <div class="hinfo" id="hSaud"></div>
+  <div class="header-left">
+    <div class="logo-word">GERBER<small>ACADEMIA</small></div>
+    <div>
+      <h1>Biguaçu</h1>
+      <span class="branch">Gerber Academia</span>
+      <div class="greeting" id="greeting" style="margin-top:4px"></div>
+      <div id="ultimaApuracao" style="font-size:0.82rem; opacity:0.75; margin-top:2px"></div>
+    </div>
+  </div>
+  <div class="date-info" id="dateInfo"></div>
 </div>
 
-<div class="wrap">
-<div class="sync"><div class="sdot spin" id="sdot"></div><span id="stxt">Conectando...</span></div>
+<nav class="nav" id="mainNav">
+  <button data-tab="meta" class="active">Meta Financeira</button>
+  <button data-tab="retencao">Retenção</button>
+  <button data-tab="folha">Resultado Folha</button>
+  <button data-tab="produtos">Produtos</button>
+  <button data-tab="historico">Histórico</button>
+  <button data-tab="insights" class="hidden-tab">🧠 Insights</button>
+  <button data-tab="lideranca">👑 Liderança</button>
+  <button data-tab="preencher">✏️ Preencher</button>
+</nav>
 
-<div class="mesbar">
-  <span class="mesbar-lbl">📅 Mês:</span>
-  <select id="mesSeletor" autocomplete="off" onchange="trocarMes()"></select>
-  <span class="stbadge st-sem" id="stBadge">—</span>
-</div>
+<div class="main">
 
-<div class="tabs" id="tabsEl">
-  <button class="tab active" onclick="goTab('meta',this)">🎯 Meta Financeira</button>
-  <button class="tab" onclick="goTab('retencao',this)">📊 Retenção</button>
-  <button class="tab" onclick="goTab('folha',this)">💰 Resultado Folha</button>
-  <button class="tab" onclick="goTab('produtos',this)">📦 Produtos</button>
-  <button class="tab" onclick="goTab('historico',this)">📋 Histórico</button>
-  <button class="tab hid" id="tabColeta" onclick="goTab('preencher',this)">✏️ Preencher</button>
-  <button class="tab hid" id="tabLider" onclick="goTab('lider',this);carregarLider()">👑 Líder</button>
-</div>
-
-<!-- ================= ABA META ================= -->
-<div class="page active" id="page-meta">
-  <div class="motiv" id="motivCard"></div>
-  <div class="mbs">
-    <div class="mb t1" id="mb1"><div class="mb-tag">Meta</div><div class="mb-val">—</div><div class="mb-bon">+R$ 400 proporcional</div></div>
-    <div class="mb t2" id="mb2"><div class="mb-tag">Meta 2</div><div class="mb-val">—</div><div class="mb-bon">+R$ 700 proporcional</div></div>
-    <div class="mb ts" id="mbs"><div class="mb-tag">Super</div><div class="mb-val">—</div><div class="mb-bon">+R$ 1.000 proporcional</div></div>
+  <div class="month-bar">
+    <label for="monthSelect">📅 Mês/Ano:</label>
+    <select id="monthSelect" autocomplete="off" onchange="loadMonth()"></select>
+    <button class="btn btn-primary" onclick="loadMonth()">Carregar</button>
+    <span class="status" id="monthStatus"></span>
+    <span class="lider-on" id="liderOn">👑 Líder conectada</span>
+    <button class="btn btn-secondary" id="btnSair" onclick="logout()" style="display:none">Sair</button>
   </div>
-  <div class="card">
-    <div class="ctitle">Progresso coletivo</div>
-    <div class="prog-total" id="d_total" style="color:var(--txt-b)">R$ 0</div>
-    <div class="prog-sub" style="color:var(--txt2-b)"><span id="d_pct">0%</span><span id="d_dias"></span></div>
-    <div class="bar bar-warn" id="barWrap"><div class="bar-f bf-verm" id="barFill" style="width:0%"></div></div>
-    <div class="marcadores">
-      <div class="marc" id="marc1"><div class="marc-line"></div><div class="marc-lbl" style="color:var(--txt2-b)" id="marc1lbl"></div></div>
-      <div class="marc" id="marc2"><div class="marc-line"></div><div class="marc-lbl" style="color:var(--txt2-b)" id="marc2lbl"></div></div>
-      <div class="marc" id="marc3" style="left:100%"><div class="marc-line"></div><div class="marc-lbl" style="color:var(--txt2-b)" id="marc3lbl"></div></div>
+
+  <div class="tab active" id="tab-meta">
+    <div class="card">
+      <h2>📊 Resultado Mensal</h2>
+      <div id="metaProgresso"><div class="loading"><div class="spinner"></div><p style="margin-top:12px">Carregando dados...</p></div></div>
     </div>
-    <div class="falta-lbl" id="d_falta" style="color:var(--txt2-b)">—</div>
+    <div id="insightBox"></div>
+    <div id="planoAnualBox"></div>
+    <div class="card"><h2>👥 Resultado por Pessoa</h2><div class="card-grid" id="cardsEquipe"></div></div>
+    <div class="card"><h2>🏆 Ranking por Participação</h2><div id="ranking"></div></div>
+    <div class="card"><h2>🎯 Meta Diária Dinâmica</h2><div id="metaDiaria"></div></div>
+    <div class="card"><h2>📆 Meta Semanal</h2><div id="metaSemanal"></div></div>
   </div>
 
-  <div class="card">
-    <div class="ctitle">📅 Meta diária necessária — dias úteis restantes</div>
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <div style="flex:1;background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:12px;text-align:center">
-        <div style="font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Para bater Meta 1</div>
-        <div style="font-size:26px;font-weight:800;color:#166534;line-height:1" id="md_meta1">—</div>
-        <div style="font-size:11px;color:#166534;margin-top:3px;font-weight:600" id="md_meta1_sub">por dia útil</div>
-      </div>
-      <div style="flex:1;background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(239,68,68,.12));border:1.5px solid rgba(245,158,11,.5);border-radius:12px;padding:12px;text-align:center">
-        <div style="font-size:10px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Para bater Super Meta</div>
-        <div style="font-size:26px;font-weight:800;color:#92400e;line-height:1" id="md_super">—</div>
-        <div style="font-size:11px;color:#92400e;margin-top:3px;font-weight:600" id="md_super_sub">por dia útil</div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--txt2-b);gap:8px">
-      <span>📆 Dias úteis restantes: <strong id="md_dias_uteis" style="color:#0f172a">—</strong></span>
-      <span id="md_hoje_util" style="font-weight:600;font-size:11px"></span>
-    </div>
-    <div style="font-size:11px;color:var(--txt2-b);margin-top:8px;font-style:italic">* Exclui sábados, domingos e feriados nacionais. Reajusta automaticamente conforme as vendas aumentam.</div>
+  <div class="tab" id="tab-retencao">
+    <div class="card"><h2>📈 Crescimento da Unidade</h2><div id="crescimentoBase"></div></div>
+    <div class="card"><h2>🔄 Renovações</h2><div id="renovacoes"></div></div>
+    <div class="card"><h2>❌ Cancelamentos</h2><div id="cancelamentosBox"></div></div>
+    <div class="card"><h2>📊 Balanço da Base</h2><div id="baseLiquida"></div></div>
   </div>
 
-  <div class="cg3" id="gridVendas"></div>
-
-  <div class="anuais-card">
-    <div class="anuais-titulo">📅 Planos anuais vendidos no mês</div>
-    <div class="anuais-grid" id="gridAnuais"></div>
-    <div class="anuais-nota">💡 Planos anuais têm ticket maior e são o foco — quanto mais anuais, mais perto da meta!</div>
+  <div class="tab" id="tab-folha">
+    <div id="folhaPessoas"></div>
+    <div class="card"><h2>📋 Resumo Folha de Pagamento</h2><div id="resumoFolha"></div></div>
   </div>
 
-  <div class="cdark">
-    <div class="bgrid">
-      <div class="bi" id="bi1"><div class="bi-tag">Meta</div><div class="bi-val">R$ 400</div><div class="bi-sub">proporcional</div></div>
-      <div class="bi" id="bi2"><div class="bi-tag">Meta 2</div><div class="bi-val">R$ 700</div><div class="bi-sub">proporcional</div></div>
-      <div class="bi" id="bi3"><div class="bi-tag">Super meta</div><div class="bi-val">R$ 1.000</div><div class="bi-sub">proporcional</div></div>
-    </div>
-    <div class="brow brow-nenhum" id="bonusRow">
-      <span class="brow-lbl" id="bonusLbl">😔 Poxa, ainda sem bônus — vamos juntas bater a meta!</span>
-      <span class="brow-none-val" id="bonusVal">R$ 0</span>
-    </div>
+  <div class="tab" id="tab-produtos">
+    <div class="card"><h2>🛒 Produtos Vendidos</h2><div id="produtosTable"></div></div>
   </div>
 
-  <div class="cdark">
-    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">🏅 Ranking de contribuição — bônus proporcional</div>
-    <div id="rankingLista" style="display:flex;flex-direction:column;gap:8px"></div>
-    <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:10px;font-style:italic">* Bônus individual = % de contribuição × bônus total desbloqueado. Quanto mais você vende, mais você recebe.</div>
+  <div class="tab" id="tab-historico">
+    <div class="card"><h2>📜 Histórico</h2><div id="historicoTable"></div></div>
   </div>
 
-  <div class="sc sc-r" id="statusCard"><div class="sc-icon" id="scIcon">😟</div><div class="sc-msg" id="scMsg">—</div><div class="sc-sub" id="scSub"></div></div>
-</div>
+  <div class="tab" id="tab-insights">
+    <div class="card"><h2>🧠 Insights Inteligentes — Desempenho da Unidade</h2><div id="insightsContent"></div></div>
+  </div>
 
-<!-- ================= ABA RETENÇÃO ================= -->
-<div class="page" id="page-retencao">
-  <div class="reta reta-vazio" id="retAlerta">
-    <div class="reta-icon" id="retIcon">📊</div>
-    <div class="reta-msg" id="retMsg">Aguardando dados</div>
-    <div class="reta-sub" id="retSub">Preencha para ver o crescimento da base</div>
-    <div class="reta-pct" id="retPct"></div>
+  <div class="tab" id="tab-lideranca">
+    <div class="card"><h2>👑 Liderança <span class="leader-badge">Restrito</span></h2><div id="liderancaContent"></div></div>
   </div>
-  <div class="retg">
-    <div class="retc"><div class="ret-lbl">Ativos dia 01</div><div class="ret-num" id="d_ini">0</div><div class="ret-hint">base do mês</div></div>
-    <div class="retc"><div class="ret-lbl">Ativos fechamento</div><div class="ret-num" id="d_fim">0</div><div class="ret-hint" id="d_var">calculado automaticamente</div></div>
-    <div class="retc"><div class="ret-lbl">Novas entradas</div><div class="ret-num rpos" id="d_entr">0</div><div class="ret-hint">novas + rematrículas</div></div>
-    <div class="retc"><div class="ret-lbl">Saldo do mês</div><div class="ret-num" id="d_saldo">0</div><div class="ret-hint" id="d_saldo_s">entradas − perdas</div></div>
-  </div>
-  <div class="rpg">
-    <div class="rpc rpc-can"><div class="rpc-num" id="d_cancel">0</div><div class="rpc-lbl">Cancelamentos</div></div>
-    <div class="rpc rpc-nr"><div class="rpc-num" id="d_nren">0</div><div class="rpc-lbl">Não renovados</div></div>
-    <div class="rpc rpc-tot"><div class="rpc-num" id="d_perdas">0</div><div class="rpc-lbl">Total perdas</div></div>
-  </div>
-  <div class="card" style="margin-top:.5rem">
-    <div class="ctitle">🎯 Meta de cancelamento da unidade</div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px">
-      <div>
-        <div style="font-size:12px;color:var(--txt2-b);margin-bottom:2px;font-weight:500">Taxa atual de cancelamento</div>
-        <div style="font-size:34px;font-weight:800;color:#0f172a" id="canc_pct">—</div>
-      </div>
-      <div style="text-align:right">
-        <div id="canc_status" style="font-weight:700;font-size:14px;color:var(--txt2-b)">—</div>
-        <div id="canc_hint" style="font-size:12px;color:var(--txt2-b);font-weight:500;margin-top:2px"></div>
-      </div>
-    </div>
-    <div class="renov-bar-bg"><div class="renov-bar-f" id="cancBar" style="width:0%"></div></div>
-    <div class="renov-badges">
-      <div class="rb" id="cb_meta"><div class="rb-tag">Meta — ≤ 4%</div><div class="rb-val" id="cb_meta_val">—</div><div class="rb-sub">dos ativos no mês</div></div>
-      <div class="rb" id="cb_super"><div class="rb-tag">Super meta — ≤ 3%</div><div class="rb-val" id="cb_super_val">—</div><div class="rb-sub">dos ativos no mês</div></div>
-    </div>
-    <div style="font-size:11px;color:var(--txt2-b);margin-top:10px;font-style:italic">* Preencha os ativos dia 01 na aba ✏️ Preencher para calcular.</div>
+
+  <div class="tab" id="tab-preencher">
+    <div class="card"><h2>✏️ Preencher Registro</h2><div id="preencherContent"></div></div>
   </div>
 </div>
 
-<!-- ================= ABA RESULTADO FOLHA ================= -->
-<div class="page" id="page-folha">
-  <div class="card">
-    <div class="ctitle">Meta de renovações</div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px">
-      <div><div style="font-size:12px;color:var(--txt2-b);margin-bottom:2px;font-weight:500">Taxa atual</div><div class="renov-pct" id="d_rpct">0%</div></div>
-      <div style="text-align:right"><div id="d_rst" style="font-weight:700;font-size:14px;color:var(--txt2-b)">—</div><div id="d_rflt" style="font-size:12px;color:var(--txt2-b);font-weight:500;margin-top:2px"></div></div>
-    </div>
-    <div class="renov-bar-bg"><div class="renov-bar-f" id="renovBar" style="width:0%"></div></div>
-    <div class="renov-badges">
-      <div class="rb" id="rb70"><div class="rb-tag">70% — básica</div><div class="rb-val">R$ 50</div><div class="rb-sub">por consultora</div></div>
-      <div class="rb" id="rb85"><div class="rb-tag">85% — cheia</div><div class="rb-val">R$ 100</div><div class="rb-sub">por consultora</div></div>
-    </div>
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h3>🔒 Acesso Restrito</h3>
+    <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:16px" id="loginTarget"></p>
+    <input type="password" id="loginPass" placeholder="Senha da líder" autocomplete="off" onkeypress="if(event.key==='Enter')checkLogin()">
+    <button class="btn btn-primary" id="btnLogin" onclick="checkLogin()" style="width:100%">Entrar</button>
+    <button class="btn" onclick="closeLogin()" style="margin-top:8px;background:#eee;color:#333;width:100%">Cancelar</button>
+    <div id="loginMsg" style="margin-top:10px;font-size:0.82rem;color:red"></div>
   </div>
-
-  <div class="card">
-    <div class="ctitle">Ganhos individuais</div>
-    <div class="remg" id="gridRem"></div>
-    <div class="eqrow"><span class="eqlbl">Total equipe (consultoras)</span><span class="eqval" id="r_eq">R$ 0</span></div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">📋 Resumo de folha</div>
-    <div class="fg" id="gridFolha"></div>
-    <div class="fgeral"><span class="fgeral-lbl">Total geral folha</span><span class="fgeral-val" id="f_geral">R$ 0</span></div>
-    <div style="font-size:11px;color:var(--txt2-b);margin-top:8px">* Créditos produtos não entram na folha — lançar no sistema para uso.</div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">📋 Política de bonificação — consultoras</div>
-    <div class="pol"><b>Bônus meta financeira (dividido proporcionalmente)</b><div>Meta 1 (100%) → R$ 400 · Meta 2 (110%) → R$ 700 · Meta 3 (120%) → R$ 1.000</div><small>Dividido pela participação de cada consultora no total vendido pelas consultoras.</small></div>
-    <div class="pol"><b>Bônus vendas (volume individual)</b><div>15 vendas → R$ 100 · 30 vendas → R$ 200 · 45 vendas → R$ 300</div><small>R$ 100 a cada 15 vendas completas. Considera novos + rematrículas de cada consultora.</small></div>
-    <div class="pol"><b>Bônus renovação (por consultora)</b><div>Taxa ≥ 70% → R$ 50 · Taxa ≥ 85% → R$ 100</div><small>Calculado sobre a taxa de renovação da unidade inteira.</small></div>
-    <div class="pol"><b>Bônus avaliação</b><div>R$ 10 por avaliação vendida (individual)</div></div>
-    <div class="pol"><b>Crédito produtos (1%)</b><div>1% do valor de produtos vendidos por cada pessoa. Crédito interno, não entra na folha.</div></div>
-    <div class="pol" style="background:#eff6ff;border-left-color:#3b82f6"><b style="color:#1d4ed8">📊 Mínimo ideal: 40 planos (novos + rematrículas)</b><div>Abaixo disso a consultora não cobre o próprio custo. Referência de desempenho — não gera bônus.</div></div>
-  </div>
-</div>
-
-<!-- ================= ABA PRODUTOS ================= -->
-<div class="page" id="page-produtos">
-  <div class="pb">
-    <div style="font-size:11px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Produtos vendidos — total geral</div>
-    <div class="pb-top">
-      <div><div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:2px;font-weight:600">Total vendido</div><div class="pb-tot" id="p_total">R$ 0</div></div>
-      <div style="text-align:right"><div class="pb-cl">Crédito gerado (1%)</div><div class="pb-cv" id="p_cred">R$ 0,00</div></div>
-    </div>
-    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px" id="p_break"></div>
-  </div>
-  <div class="pg3" id="gridProd"></div>
-  <div style="font-size:11px;color:var(--txt3);text-align:center;margin-bottom:.875rem">* Créditos não entram na folha — lançar no sistema para uso.</div>
-</div>
-
-<!-- ================= ABA HISTÓRICO ================= -->
-<div class="page" id="page-historico">
-  <div class="hbox">
-    <div class="htop">
-      <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">📋 Registros do mês</div>
-      <button class="hbtn" onclick="carregarHistorico()">↻ Atualizar</button>
-    </div>
-    <div class="hlist" id="hlist"><div class="hvazio">Carregando...</div></div>
-  </div>
-</div>
-
-<!-- ================= ABA LÍDER (só com senha) ================= -->
-<div class="page" id="page-lider">
-  <div id="liderConteudo"><div class="hbox"><div class="hvazio">Carregando...</div></div></div>
-</div>
-
-<!-- ================= ABA PREENCHER (só com senha) ================= -->
-<div class="page" id="page-preencher">
-  <div class="coleta-header">
-    <div class="ch-info">✏️ Coleta de dados · <strong id="ch_mes" style="color:#fbbf24"></strong></div>
-    <div class="ch-info" id="ch_ult"></div>
-  </div>
-  <div class="lockbox" id="lockbox">🔒 Este mês está FECHADO. Os dados ficam só para consulta — nenhuma alteração é aceita.</div>
-
-  <div class="sec">🎯 Vendas por consultora</div>
-  <div class="cg3" id="gridInputs"></div>
-
-  <div class="anuais-coleta">
-    <div class="anuais-coleta-titulo">📅 Planos anuais vendidos</div>
-    <div class="anuais-coleta-nota">Não somam no valor total — são o foco estratégico pois têm ticket maior e ajudam a bater meta.</div>
-    <div class="anuais-coleta-grid" id="gridInputsAnuais"></div>
-  </div>
-
-  <div class="sec">🔄 Renovações</div>
-  <div class="cp" style="max-width:380px;margin-bottom:.875rem">
-    <div class="campo"><label>Contratos vencendo no mês</label><input type="number" id="renovTotal" value="0" min="0"></div>
-    <div class="campo"><label>Renovados até hoje</label><input type="number" id="renovFeitos" value="0" min="0"></div>
-  </div>
-
-  <div class="sec">📊 Retenção</div>
-  <div class="cp" style="max-width:380px;margin-bottom:.875rem">
-    <div class="campo"><label>Ativos dia 01 do mês</label><input type="number" id="ativos_inicio" value="0" min="0"></div>
-    <div class="campo"><label>Cancelamentos no mês</label><input type="number" id="cancelamentos" value="0" min="0"></div>
-  </div>
-
-  <div class="salvar-box">
-    <div class="salvar-titulo">💾 Salvar todos os dados de uma vez</div>
-    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap">
-      <label for="dataRef" style="font-size:12px;color:rgba(255,255,255,.7);font-weight:600">📅 Dados referentes ao dia:</label>
-      <input type="date" id="dataRef" style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;border:1px solid var(--borda2);background:rgba(255,255,255,.08);color:#fff;color-scheme:dark">
-    </div>
-    <div class="salvar-row">
-      <input class="sinp" type="text" id="nomeInput" placeholder="Seu nome completo..." maxlength="60">
-      <button class="sbtn" id="btnSalvar" onclick="salvar()">💾 Salvar</button>
-    </div>
-    <div class="salvar-ult" id="ultimoSalvo">—</div>
-  </div>
-</div>
-
-<div class="rodape">Gerber Academia · Biguaçu · Sistema interno</div>
 </div>
 
 <div class="toast" id="toast"></div>
-<canvas id="cc"></canvas>
-<div class="celeb" id="celebCard"><span class="ce" id="celebE">🏆</span><div class="cm" id="celebM"></div><div class="cs2" id="celebS"></div></div>
+<canvas id="confettiCanvas"></canvas>
 
 <script>
 // =====================================================================
-//  ÚNICA LINHA QUE MUDA ENTRE UNIDADES: o link do Apps Script publicado.
-//  Senha, metas, consultoras e status do mês ficam na aba CONFIG da planilha.
+//  ÚNICA LINHA QUE MUDA ENTRE UNIDADES: link do Apps Script publicado.
+//  Senha da líder, metas, consultoras e meses ABERTOS ficam na aba CONFIG.
 // =====================================================================
-var SHEET_URL = "https://script.google.com/macros/s/AKfycbxxq_5Uqwg5dUHV_m65pVYogainoevZjq7dQL46O_VCqgFRFnqV_vDEy11XHVHpTF0e/exec";
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxxq_5Uqwg5dUHV_m65pVYogainoevZjq7dQL46O_VCqgFRFnqV_vDEy11XHVHpTF0e/exec';
 
-var MAX_SLOTS = 6;
-var METAS_PADRAO = [80000, 88000, 96000];
-var NOMES_PADRAO = ['Sabrina', 'Ana Beatriz'];
-var CORES = [
-  {av:'background:#dbeafe;color:#1e3a8a', fc:'linear-gradient(135deg,#0f2d5a,#1e5fc4)', rk:'#3b82f6'},
-  {av:'background:#dcfce7;color:#14532d', fc:'linear-gradient(135deg,#052e16,#16a34a)', rk:'#22c55e'},
-  {av:'background:#fff7ed;color:#c2410c', fc:'linear-gradient(135deg,#431407,#ea580c)', rk:'#f97316'},
-  {av:'background:#fce7f3;color:#9d174d', fc:'linear-gradient(135deg,#500724,#db2777)', rk:'#ec4899'},
-  {av:'background:#e0f2fe;color:#075985', fc:'linear-gradient(135deg,#082f49,#0284c7)', rk:'#0ea5e9'},
-  {av:'background:#fef9c3;color:#854d0e', fc:'linear-gradient(135deg,#422006,#ca8a04)', rk:'#eab308'}
-];
+// ==================== POLÍTICA (CONSULTORAS) ====================
+const POLITICA = {
+  bonusMeta: [400, 700, 1000],         // Meta 1 / 2 / 3 — dividido pela participação
+  renov70: 50, renov85: 100,           // por consultora, sobre a taxa da unidade
+  aval: 10,                            // por avaliação
+  bloco: 15, valorBloco: 100,          // R$100 a cada 15 vendas completas
+  excedenteMin: 10, valorExcedente: 5, // sobra de 10 a 14 acima de um bloco → R$5 por venda
+  minimoIdeal: 40,                     // planos/mês — referência de desempenho
+  planoAnualValor: 1428                // usado nas dicas de "quantos anuais faltam"
+};
+const METAS_PADRAO = [80000, 88000, 96000];
+const NOMES_PADRAO = ['Sabrina', 'Ana Beatriz'];
+const CORES = ['#c44569', '#0f3460', '#27ae60', '#8e44ad', '#e67e22', '#16a085'];
+const FERIADOS = {
+  2025: ['2025-01-01','2025-03-03','2025-03-04','2025-04-18','2025-04-21','2025-05-01','2025-06-19','2025-09-07','2025-10-12','2025-11-02','2025-11-15','2025-11-20','2025-12-25'],
+  2026: ['2026-01-01','2026-02-16','2026-02-17','2026-04-03','2026-04-21','2026-05-01','2026-06-04','2026-09-07','2026-10-12','2026-11-02','2026-11-15','2026-11-20','2026-12-25']
+};
+const FIXOS_ANO = ['01-01','04-21','05-01','09-07','10-12','11-02','11-15','11-20','12-25'];
 
-var ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-var MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-var DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-var FERIADOS_NACIONAIS = ['01/01','21/04','01/05','07/09','12/10','02/11','15/11','20/11','25/12'];
+// ==================== STATE ====================
+const ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MESES_NOME = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+let currentMonth = null;
+let records = [];
+let cfg = null;
+let SLOTS = [];
+let senhaLider = null;   // só em memória: fechar ou recarregar a página pede a senha de novo
+let isUnlocked = false;
+let pendingTab = '';
+let confettiShown = {};
 
-var M1 = 80000, M2 = 88000, SU = 96000;
-var SLOTS = NOMES_PADRAO.map(function(n,i){ return {k:i+1, nome:n}; });
-var _slotsKey = '';
-var STATUS_MES = 'SEM_CONFIG';
-var _modoEdicao = false, _mesPendente = null, _mesAnterior = null;
-var _bonusMeta = 0, _rem = {}, _lastMeta = 0;
-
-var FIXOS = ['ov','op','o_novas','o_remat','o_aval','ou_prod','renovTotal','renovFeitos','ativos_inicio','cancelamentos'];
-var CAMPOS_C = ['v','p','novas','remat','aval','prod'];
-
-// ---------- utilitários ----------
-function $(id){ return document.getElementById(id); }
-function s(id,v){ var e=$(id); if(e) e.textContent=v; }
-function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
-function parseBR(v){
-  if(typeof v==='number') return isFinite(v)?v:0;
-  var t=String(v==null?'':v).trim().replace(/[R$\s]/g,'');
-  if(!t) return 0;
-  if(t.indexOf(',')>=0) t=t.replace(/\./g,'').replace(',','.');
-  else if((t.match(/\./g)||[]).length>1 || /^-?\d{1,3}\.\d{3}$/.test(t)) t=t.replace(/\./g,'');
-  var n=parseFloat(t); return isFinite(n)?n:0;
+// ==================== HELPERS ====================
+function $(id) { return document.getElementById(id); }
+function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function num(v) {
+  if (typeof v === 'number') return isFinite(v) ? v : 0;
+  let s = String(v == null ? '' : v).trim().replace(/[R$\s]/g, '');
+  if (!s) return 0;
+  if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+  else if ((s.match(/\./g) || []).length > 1 || /^-?\d{1,3}\.\d{3}$/.test(s)) s = s.replace(/\./g, '');
+  const n = parseFloat(s); return isFinite(n) ? n : 0;
 }
-function gi(id){ var e=$(id); return e ? Math.max(parseBR(e.value),0) : 0; }
-function ii(id){ var e=$(id); return e ? Math.max(parseInt(e.value,10)||0,0) : 0; }
-function fmt(v){ return 'R$ '+Math.round(v).toLocaleString('pt-BR'); }
-function fmtd(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function fmtMoneyInput(v){ return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function fmtK(v){ var k=v/1000; return (k===Math.floor(k)?k.toFixed(0):k.toFixed(1).replace('.',','))+'k'; }
-function ss(cls,txt){ $('sdot').className='sdot '+cls; $('stxt').textContent=txt; }
-function toast(msg,bg){ var t=$('toast'); t.textContent=msg; t.style.background=bg||'#16a34a'; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},3200); }
-function sigla(n){ var p=String(n||'').trim().split(/\s+/).filter(Boolean); if(!p.length) return '?'; return (p.length>1 ? p[0][0]+p[1][0] : p[0].slice(0,2)).toUpperCase(); }
-function mesNum(m){ var p=m.split('/'); return parseInt(p[1],10)*12+ABREV.indexOf(p[0]); }
-function cor(c){ return CORES[(c.k-1)%CORES.length]; }
-function isMoney(id){ return id==='ov' || id==='ou_prod' || /^c\d+_(v|prod)$/.test(id); }
-function idsAtivos(){ var a=FIXOS.slice(); SLOTS.forEach(function(c){ CAMPOS_C.forEach(function(f){ a.push('c'+c.k+'_'+f); }); }); return a; }
+function fmt(v) { return Math.round(Number(v) || 0).toLocaleString('pt-BR'); }
+function fmt2(v) { return (Number(v) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function pct(v) { return (Number(v) || 0).toFixed(1).replace('.', ','); }
+function corSlot(k) { return CORES[(k - 1) % CORES.length]; }
+function rotulo(m) { const p = m.split('/'); return MESES_NOME[ABREV.indexOf(p[0])] + ' ' + p[1]; }
+function mesKey(m) { const p = m.split('/'); return parseInt(p[1], 10) * 100 + ABREV.indexOf(p[0]) + 1; }
+function mesHoje() { const d = new Date(); return ABREV[d.getMonth()] + '/' + d.getFullYear(); }
+function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function parseData(s) { const p = String(s || '').split('/'); if (p.length !== 3) return null; return new Date(+p[2], +p[1] - 1, +p[0]); }
+function toast(msg, cor) { const t = $('toast'); t.textContent = msg; t.style.background = cor || '#27ae60'; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 3500); }
+function isFeriado(d) { const l = FERIADOS[d.getFullYear()]; return l ? l.includes(iso(d)) : FIXOS_ANO.includes(iso(d).slice(5)); }
+function isUtil(d) { const w = d.getDay(); return w !== 0 && w !== 6 && !isFeriado(d); }
+function contarUteis(de, ate) { let c = 0; const d = new Date(de.getFullYear(), de.getMonth(), de.getDate()); while (d <= ate) { if (isUtil(d)) c++; d.setDate(d.getDate() + 1); } return c; }
 
-// ---------- comunicação com o Apps Script ----------
-function apiGet(params){
-  var q=Object.keys(params).map(function(k){return k+'='+encodeURIComponent(params[k]);}).join('&');
-  return fetch(SHEET_URL+'?'+q+'&_='+Date.now()).then(function(r){ return r.json(); });
+// ==================== API ====================
+async function apiGet(params) {
+  const res = await fetch(SHEET_URL + '?' + new URLSearchParams(params) + '&_=' + Date.now());
+  if (!res.ok) throw new Error('Erro HTTP ' + res.status);
+  return res.json();
 }
-function apiPost(body){
-  return fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)})
-    .then(function(r){ return r.json(); });
-}
-
-// ---------- senhas por mês (só nesta aba do navegador) ----------
-function getSenhas(){ try{ return JSON.parse(sessionStorage.getItem('gb_senhas')||'{}'); }catch(e){ return {}; } }
-function setSenha(mes,senha){ try{ var o=getSenhas(); if(senha) o[mes]=senha; else delete o[mes]; sessionStorage.setItem('gb_senhas',JSON.stringify(o)); }catch(e){} }
-
-// ---------- datas ----------
-var now = new Date(), h = now.getHours();
-var MES_HOJE = ABREV[now.getMonth()]+'/'+now.getFullYear();
-function isFeriado(d){ return FERIADOS_NACIONAIS.indexOf(String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'))>=0; }
-function isUtilDia(d){ var w=d.getDay(); return w!==0 && w!==6 && !isFeriado(d); }
-function contarDiasUteis(a,b){ var c=0, cur=new Date(a.getFullYear(),a.getMonth(),a.getDate()), end=new Date(b.getFullYear(),b.getMonth(),b.getDate()); while(cur<=end){ if(isUtilDia(cur)) c++; cur.setDate(cur.getDate()+1); } return c; }
-
-s('hMes', MESES[now.getMonth()]+' '+now.getFullYear());
-s('hSaud', (h<12?'☀️ Bom dia':h<18?'🌤️ Boa tarde':'🌙 Boa noite')+' · '+DIAS[now.getDay()]+', '+now.getDate()+'/'+String(now.getMonth()+1).padStart(2,'0'));
-
-function rotulo(m){ var p=m.split('/'); return MESES[ABREV.indexOf(p[0])]+' '+p[1]; }
-// Só os meses ABERTOS na CONFIG aparecem (controle da gestão pela planilha)
-function carregarMeses(){
-  return apiGet({action:'meses'}).then(function(lista){
-    if(!Array.isArray(lista)) lista=[];
-    var sel=$('mesSeletor'), atual=sel.value; sel.innerHTML='';
-    lista.forEach(function(m){ var o=document.createElement('option'); o.value=m; o.textContent=rotulo(m); sel.appendChild(o); });
-    if(!lista.length) return false;
-    sel.value = lista.indexOf(atual)>=0 ? atual : (lista.indexOf(MES_HOJE)>=0 ? MES_HOJE : lista[0]);
-    _mesAnterior=sel.value;
-    return true;
-  });
-}
-function getMesSelecionado(){ return $('mesSeletor').value || MES_HOJE; }
-
-var FRASES=["Cada não te deixa mais perto do próximo sim.","Resultados são construídos dia a dia.","Renovar é mais barato que captar — cuide do que já é seu.","A meta de hoje é o mínimo de amanhã.","Consistência supera intensidade — apareça todos os dias.","Um cliente bem atendido traz cinco. Um mal atendido afasta dez.","Cada renovação é uma venda que não precisa ser feita do zero.","Não espere a motivação para agir. Aja para encontrar a motivação.","A equipe que treina junta, vence junta.","Foco, disciplina e resultado — nessa ordem."];
-var DICAS=["💡 Faça follow-up dos leads que não fecharam na semana passada.","💡 Clientes perto de vencer merecem uma ligação hoje.","💡 Pergunte ao cliente como foi a semana de treino — ele se sente valorizado.","💡 Uma avaliação de bioimpedância pode ser o argumento que faltava para renovar.","💡 Compartilhe o progresso da meta com sua equipe — isso energiza."];
-(function(){
-  var dia=Math.floor((now-new Date(now.getFullYear(),0,0))/864e5);
-  var diasMes=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(), diasR=diasMes-now.getDate();
-  $('motivCard').innerHTML='<div class="mv-title">'+(h<12?'☀️ Bom dia, Gerber Biguaçu!':h<18?'🌤️ Boa tarde, Gerber Biguaçu!':'🌙 Boa noite, Gerber Biguaçu!')+'</div>'+
-  '<div class="mv-data">'+DIAS[now.getDay()]+', '+now.getDate()+' de '+MESES[now.getMonth()]+' · '+now.getFullYear()+'</div>'+
-  '<div class="mv-frase">"'+FRASES[dia%FRASES.length]+'"</div>'+
-  '<div class="mv-tip">'+DICAS[dia%DICAS.length]+'</div>'+
-  '<div class="contagem"><div class="ci"><div class="ci-n">'+diasR+'</div><div class="ci-l">Dias restantes</div></div><div class="ci"><div class="ci-n">'+(diasR/7).toFixed(1).replace('.',',')+'</div><div class="ci-l">Semanas</div></div><div class="ci"><div class="ci-n">'+diasMes+'</div><div class="ci-l">Dias no mês</div></div></div>';
-})();
-
-function goTab(n,el){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  $('page-'+n).classList.add('active');
-  el.classList.add('active');
+async function apiPost(body) {
+  const res = await fetch(SHEET_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error('Erro HTTP ' + res.status);
+  return res.json();
 }
 
-// ---------- montagem dos cards conforme as consultoras do mês ----------
-function avHTML(c,px){ return '<div class="av" style="'+cor(c).av+(px?';width:'+px+'px;height:'+px+'px;font-size:10px;margin-bottom:0':'')+'">'+esc(sigla(c.nome))+'</div>'; }
-function campoHTML(lbl,id){ var m=isMoney(id); return '<div class="campo"><label>'+lbl+'</label><input type="'+(m?'text':'number')+'" '+(m?'inputmode="decimal" class="money"':'min="0"')+' id="'+id+'" value="'+(m?'0,00':'0')+'"></div>'; }
-function rlHTML(lbl,id,ini){ return '<div class="rl"><span class="rlbl">'+lbl+'</span><span class="rv" id="'+id+'">'+(ini||'R$ 0')+'</span></div>'; }
-
-function renderSlots(){
-  var key=SLOTS.map(function(c){return c.k+':'+c.nome;}).join('|');
-  if(key===_slotsKey) return;
-  var snap=_slotsKey ? getSnap() : null;
-  _slotsKey=key;
-
-  $('gridVendas').innerHTML=SLOTS.map(function(c){
-    return '<div class="cc">'+avHTML(c)+'<div style="display:flex;align-items:center;gap:4px"><div class="cn">'+esc(c.nome)+'</div><span id="rank_'+c.k+'" style="font-size:14px"></span></div><div class="cs">Consultora</div><div class="dv"></div><div class="sl">Total vendido</div><div class="sv" id="d_v'+c.k+'">R$ 0</div><div class="ss" id="d_p'+c.k+'">0 planos anuais</div><div class="ss" id="d_min'+c.k+'" style="font-weight:700;margin-top:4px"></div></div>';
-  }).join('')+'<div class="cc out"><div class="av out2">+</div><div class="cn">Outros</div><div class="cs">Líder / outros</div><div class="nb">Só registro</div><div class="dv"></div><div class="sl">Total vendido</div><div class="sv" id="d_ov">R$ 0</div><div class="ss" id="d_op">0 planos anuais</div></div>';
-
-  $('gridAnuais').innerHTML=SLOTS.map(function(c){
-    return '<div class="anuais-item"><div class="anuais-num" id="an_'+c.k+'">0</div><div class="anuais-lbl">'+esc(c.nome)+'</div></div>';
-  }).join('')+'<div class="anuais-item"><div class="anuais-num" id="an_out">0</div><div class="anuais-lbl">Outros</div></div>';
-
-  $('gridRem').innerHTML=SLOTS.map(function(c){
-    return '<div class="rc"><div class="rn"><div class="rav" style="'+cor(c).av+'">'+esc(sigla(c.nome))+'</div><span class="rnm">'+esc(c.nome)+'</span></div>'+
-      rlHTML('Vendas contabilizadas','r'+c.k+'_qtd','0 vendas')+rlHTML('Mínimo ideal ('+MINIMO_IDEAL+')','r'+c.k+'_min','—')+rlHTML('Bônus vendas','r'+c.k+'_v')+rlHTML('Bônus renovações','r'+c.k+'_r')+rlHTML('Bônus avaliações','r'+c.k+'_a')+
-      '<div class="rtlbl">Total variável</div><div class="rtotal" id="r'+c.k+'_t">R$ 0</div></div>';
-  }).join('');
-
-  $('gridFolha').innerHTML=SLOTS.map(function(c){
-    return '<div class="fc" style="background:'+cor(c).fc+'"><div class="fc-nome"><div class="fc-av">'+esc(sigla(c.nome))+'</div><span>'+esc(c.nome)+'</span></div>'+
-      '<div class="fcl"><span class="fclbl">Variável</span><span class="fcv" id="f'+c.k+'_v">R$ 0</span></div>'+
-      '<div class="fcl"><span class="fclbl">Bônus meta financ.</span><span class="fcv" id="f'+c.k+'_m">R$ 0</span></div>'+
-      '<div class="fctlbl">Total folha</div><div class="fctotal" id="f'+c.k+'_t">R$ 0</div>'+
-      '<div class="fccred">Crédito produtos: R$ <span id="f'+c.k+'_c">0,00</span></div></div>';
-  }).join('');
-
-  $('gridProd').innerHTML=SLOTS.map(function(c){
-    return '<div class="pc"><div class="pcn">'+avHTML(c,30)+'<div style="font-size:14px;font-weight:700">'+esc(c.nome)+'</div></div><div class="pcd"></div>'+
-      '<div class="pcr"><span class="pcr-lbl">Total</span><span class="pcr-val" id="p_'+c.k+'">R$ 0</span></div>'+
-      '<div class="pcct"><span class="pcct-lbl">Crédito (1%)</span><span class="pcct-val" id="pc_'+c.k+'">R$ 0,00</span></div></div>';
-  }).join('')+'<div class="pc out"><div class="pcn"><div class="av out2" style="width:30px;height:30px;font-size:10px;margin-bottom:0">+</div><div style="font-size:14px;font-weight:700">Outros</div></div><div class="nb" style="margin-bottom:8px">Sem crédito</div><div class="pcd"></div><div class="pcr"><span class="pcr-lbl">Total</span><span class="pcr-val" id="p_out">R$ 0</span></div></div>';
-
-  $('gridInputs').innerHTML=SLOTS.map(function(c){
-    var k='c'+c.k+'_';
-    return '<div class="cp"><div class="cph">'+avHTML(c,36)+'<div class="cn">'+esc(c.nome)+'</div></div><div class="cpd"></div>'+
-      campoHTML('Valor vendido (R$)',k+'v')+campoHTML('Novas vendas (qtd)',k+'novas')+campoHTML('Rematrículas (qtd)',k+'remat')+campoHTML('Avaliações (qtd)',k+'aval')+campoHTML('Produtos (R$)',k+'prod')+'</div>';
-  }).join('')+'<div class="cp out"><div class="cph"><div class="av out2" style="margin-bottom:0">+</div><div><div class="cn">Outros</div><div class="cs" style="margin-bottom:0">Líder / outros</div></div></div><div class="nb">Sem bônus</div><div class="cpd"></div>'+
-    campoHTML('Valor vendido (R$)','ov')+campoHTML('Novas vendas (qtd)','o_novas')+campoHTML('Rematrículas (qtd)','o_remat')+campoHTML('Avaliações (qtd)','o_aval')+campoHTML('Produtos (R$)','ou_prod')+'</div>';
-
-  $('gridInputsAnuais').innerHTML=SLOTS.map(function(c){
-    return '<div class="acg-item"><div class="acg-nome">'+esc(c.nome)+'</div><input type="number" id="c'+c.k+'_p" value="0" min="0"></div>';
-  }).join('')+'<div class="acg-item"><div class="acg-nome">Outros</div><input type="number" id="op" value="0" min="0"></div>';
-
-  if(snap) applySnap(snap);
+// ==================== GREETING ====================
+function setGreeting() {
+  const h = new Date().getHours();
+  $('greeting').textContent = h >= 5 && h < 12 ? '☀️ Bom dia, equipe!' : h >= 12 && h < 18 ? '🌤️ Boa tarde, equipe!' : '🌙 Boa noite, equipe!';
+  const now = new Date(), fim = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  $('dateInfo').innerHTML = '<div>' + now.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' }) + '</div><div>' + contarUteis(now, fim) + ' dias úteis restantes (incluindo hoje)</div>';
 }
 
-function slotsDe(cfg,row){
-  var out=[];
-  if(cfg && Array.isArray(cfg.consultoras)) cfg.consultoras.forEach(function(c){ if(c && c.nome && c.k>=1 && c.k<=MAX_SLOTS) out.push({k:c.k,nome:String(c.nome)}); });
-  if(!out.length && row){ for(var k=1;k<=MAX_SLOTS;k++){ var n=row['c'+k+'_nome']; if(n) out.push({k:k,nome:String(n)}); } }
-  if(!out.length) out=NOMES_PADRAO.map(function(n,i){ return {k:i+1,nome:n}; });
-  return out;
+// ==================== NAV + LOGIN ====================
+const RESTRITAS = ['preencher', 'lideranca', 'historico', 'insights'];
+document.querySelectorAll('.nav button').forEach(btn => btn.addEventListener('click', () => {
+  const tab = btn.dataset.tab;
+  if (RESTRITAS.includes(tab) && !isUnlocked) { pendingTab = tab; showLogin(btn.textContent.trim()); return; }
+  switchTab(tab);
+}));
+function switchTab(tab) {
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + tab));
+  if (tab === 'preencher') renderPreencher();
+  else if (tab === 'lideranca') renderLideranca();
+  else if (tab === 'historico') renderHistorico();
+  else if (tab === 'insights') renderInsights();
 }
-
-// ---------- CONFIG do mês (metas, status) ----------
-function metasFallback(mes){
-  var p=mes.split('/'), ano=parseInt(p[1],10), idx=ABREV.indexOf(p[0]);
-  if(ano<2026 || (ano===2026 && idx<=5)) return [90000,100000,110000];
-  return METAS_PADRAO;
+function showLogin(target) {
+  $('loginTarget').textContent = target + ' — senha de ' + rotulo(currentMonth);
+  $('loginMsg').textContent = '';
+  $('loginOverlay').classList.add('show');
+  setTimeout(() => $('loginPass').focus(), 50);
 }
-function aplicarConfig(cfg, mes){
-  var metas = (cfg && cfg.meta1 && cfg.super) ? [cfg.meta1, cfg.meta2||cfg.meta1, cfg.super] : metasFallback(mes);
-  M1=metas[0]; M2=metas[1]; SU=metas[2];
-  STATUS_MES = cfg ? (cfg.status||'SEM_CONFIG') : 'SEM_CONFIG';
-  renderSlots();
-
-  document.querySelector('#mb1 .mb-val').textContent='R$ '+fmtK(M1);
-  document.querySelector('#mb2 .mb-val').textContent='R$ '+fmtK(M2);
-  document.querySelector('#mbs .mb-val').textContent='R$ '+fmtK(SU);
-  $('marc1').style.left=(M1/SU*100).toFixed(1)+'%';
-  $('marc2').style.left=(M2/SU*100).toFixed(1)+'%';
-  s('marc1lbl',fmtK(M1)); s('marc2lbl',fmtK(M2)); s('marc3lbl',fmtK(SU));
-
-  var b=$('stBadge');
-  if(STATUS_MES==='FECHADO'){ b.className='stbadge st-fechado'; b.textContent='🔒 FECHADO'; }
-  else if(STATUS_MES==='ABERTO'){ b.className='stbadge st-aberto'; b.textContent='ABERTO'; }
-  else { b.className='stbadge st-sem'; b.textContent='sem config'; }
-  var fechado = STATUS_MES==='FECHADO';
-  $('lockbox').style.display = fechado ? 'block' : 'none';
-  $('btnSalvar').disabled = fechado;
-  document.querySelectorAll('#page-preencher input').forEach(function(i){ i.disabled = fechado; });
-  var opt=$('mesSeletor').selectedOptions[0]; s('ch_mes', opt?opt.textContent:'');
-  ajustarDataRef(mes);
-  recalc();
+function closeLogin() { $('loginOverlay').classList.remove('show'); $('loginPass').value = ''; $('loginMsg').textContent = ''; pendingTab = ''; }
+async function checkLogin() {
+  const senha = $('loginPass').value.trim();
+  if (!senha) { $('loginMsg').textContent = 'Digite a senha.'; return; }
+  const btn = $('btnLogin'); btn.disabled = true; btn.textContent = 'Verificando...';
+  try {
+    const r = await apiPost({ action: 'login', mes: currentMonth, senha });
+    if (r && r.ok) { senhaLider = senha; setUnlocked(true); const tab = pendingTab || 'preencher'; closeLogin(); switchTab(tab); }
+    else $('loginMsg').textContent = (r && r.msg) || 'Senha incorreta!';
+  } catch (e) { $('loginMsg').textContent = 'Sem conexão com a planilha.'; }
+  btn.disabled = false; btn.textContent = 'Entrar';
 }
-// Data do registro: limitada ao mês selecionado. Padrão = hoje (mês atual) ou último dia (outros meses)
-function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function ajustarDataRef(mes){
-  var p=mes.split('/'), idx=ABREV.indexOf(p[0]), ano=parseInt(p[1],10), el=$('dataRef');
-  var ini=new Date(ano,idx,1), fim=new Date(ano,idx+1,0);
-  el.min=iso(ini); el.max=iso(fim);
-  if(!el.value || el.value<el.min || el.value>el.max) el.value = (mes===MES_HOJE) ? iso(now) : iso(fim);
-}
-
-// ---------- regras de remuneração ----------
-// R$100 a cada 15 vendas completas (novos + rematrículas): 15→100, 30→200, 45→300
-var MINIMO_IDEAL = 40;
-function calcBV(t){ return Math.floor(t/15)*100; }
-function totalVendido(){ var t=gi('ov'); SLOTS.forEach(function(c){ t+=gi('c'+c.k+'_v'); }); return t; }
-
-function recalc(){ recalcMeta(); recalcRem(); recalcProd(); recalcRet(); calcMetaDiaria(); }
-
-function calcMetaDiaria(){
-  var mes=getMesSelecionado(), total=totalVendido();
-  var p=mes.split('/'), idx=ABREV.indexOf(p[0]), ano=parseInt(p[1],10);
-  var ultimo=new Date(ano,idx+1,0), hoje=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  var dif=mesNum(mes)-mesNum(MES_HOJE), dias;
-  if(dif<0) dias=0;
-  else dias=contarDiasUteis(dif===0 ? hoje : new Date(ano,idx,1), ultimo);
-  var diasCal = dif<0 ? 0 : dif===0 ? (ultimo.getDate()-now.getDate()) : ultimo.getDate();
-  s('d_dias', dif<0 ? 'mês encerrado' : diasCal+' dias restantes');
-  s('md_dias_uteis', dias);
-  s('md_hoje_util', dif<0 ? '📁 Mês encerrado' : dif>0 ? '🗓️ Mês futuro' : (isUtilDia(hoje)?'✅ Hoje é dia útil':'⛔ Hoje não é dia útil'));
-  [['md_meta1','md_meta1_sub',M1,'Meta 1'],['md_super','md_super_sub',SU,'Super meta']].forEach(function(c){
-    var saldo=Math.max(c[2]-total,0);
-    if(saldo<=0){ s(c[0],'✅'); s(c[1],c[3]+' atingida!'); }
-    else if(dias<=0){ s(c[0],'—'); s(c[1],'faltaram '+fmt(saldo)); }
-    else { s(c[0],'R$ '+Math.ceil(saldo/dias).toLocaleString('pt-BR')); s(c[1],'faltam '+fmt(saldo)); }
-  });
-}
-
-function recalcMeta(){
-  var total=totalVendido(), pct=Math.min(total/SU*100,100);
-  s('d_total',fmt(total)); s('d_pct',pct.toFixed(1).replace('.',',')+'% da super meta');
-  SLOTS.forEach(function(c){ s('d_v'+c.k,fmt(gi('c'+c.k+'_v'))); s('d_p'+c.k,ii('c'+c.k+'_p')+' planos anuais'); s('an_'+c.k,ii('c'+c.k+'_p')); });
-  s('d_ov',fmt(gi('ov'))); s('d_op',ii('op')+' planos anuais'); s('an_out',ii('op'));
-  var bf=$('barFill'), bw=$('barWrap');
-  bf.style.width=pct+'%';
-  if(total>=SU){bw.className='bar bar-ok';bf.className='bar-f bf-amber';}
-  else if(total>=M2){bw.className='bar bar-ok';bf.className='bar-f bf-azul';}
-  else if(total>=M1){bw.className='bar bar-ok';bf.className='bar-f bf-verde';}
-  else{bw.className='bar bar-warn';bf.className='bar-f bf-verm';}
-  var fl=$('d_falta');
-  if(total>=SU) fl.innerHTML='🏆 <span class="fd" style="color:#16a34a">Super meta atingida!</span>';
-  else if(total>=M2) fl.innerHTML='🔥 Faltam <span class="fd">'+fmt(SU-total)+'</span> para a super meta';
-  else if(total>=M1) fl.innerHTML='✅ Faltam <span class="fd">'+fmt(M2-total)+'</span> para a meta 2';
-  else fl.innerHTML='😟 Faltam <span class="fd" style="color:#dc2626">'+fmt(M1-total)+'</span> para a meta inicial';
-
-  var bonus=total>=SU?1000:total>=M2?700:total>=M1?400:0;
-  _bonusMeta=bonus;
-  ['bi1','bi2','bi3'].forEach(function(id,i){ $(id).className='bi'+(bonus>=[400,700,1000][i]?' on':''); });
-  ['mb1','mb2','mbs'].forEach(function(id,i){ $(id).className='mb '+['t1','t2','ts'][i]+(bonus>=[400,700,1000][i]?' '+['on1','on2','ons'][i]:''); });
-  var br=$('bonusRow'), bl=$('bonusLbl'), bv=$('bonusVal');
-  if(bonus>0){ br.className='brow brow-ok'; bl.textContent='🎉 Bônus meta financeira desbloqueado!'; bv.className='brow-ok-val'; bv.textContent='R$ '+bonus.toLocaleString('pt-BR')+' (proporcional)'; }
-  else { br.className='brow brow-nenhum'; bl.textContent='😔 Poxa, ainda sem bônus — vamos juntas bater a meta!'; bv.className='brow-none-val'; bv.textContent='R$ 0'; }
-
-  var sc=$('statusCard');
-  if(total>=SU){sc.className='sc sc-o';s('scIcon','🏆');s('scMsg','Super meta batida!');s('scSub','R$ 1.000 de bônus proporcional desbloqueado! Incrível!');}
-  else if(total>=M2){sc.className='sc sc-a';s('scIcon','🔥');s('scMsg','Meta 2 atingida!');s('scSub','Faltam '+fmt(SU-total)+' para a super meta — empurra!');}
-  else if(total>=M1){sc.className='sc sc-v';s('scIcon','✅');s('scMsg','Meta inicial atingida!');s('scSub','Faltam '+fmt(M2-total)+' para a meta 2 — continua!');}
-  else if(total>=M1*0.5){sc.className='sc sc-i';s('scIcon','😤');s('scMsg','Já passamos da metade — vamos lá!');s('scSub','Faltam '+fmt(M1-total)+' para a meta inicial — não para!');}
-  else{sc.className='sc sc-r';s('scIcon','😟');s('scMsg','Atenção — estamos longe da meta!');s('scSub','Faltam '+fmt(M1-total)+' para a meta inicial. Precisamos acelerar!');}
-
-  var lvl=total>=SU?3:total>=M2?2:total>=M1?1:0;
-  if(lvl>_lastMeta && _lastMeta>=0){
-    if(lvl===3) dispararConfete('🏆','Super meta batida!','R$ 1.000 de bônus proporcional!');
-    else if(lvl===2) dispararConfete('🔥','Meta 2 atingida!','R$ 700 — partiu super meta!');
-    else if(lvl===1) dispararConfete('✅','Meta inicial batida!','R$ 400 de bônus proporcional!');
-  }
-  if(_lastMeta>=0) _lastMeta=Math.max(_lastMeta,lvl);
-}
-
-function recalcRem(){
-  var rt=ii('renovTotal'), rf=ii('renovFeitos'), pct=0;
-  if(rt===0){
-    s('d_rpct','—'); $('renovBar').style.width='0%'; $('renovBar').className='renov-bar-f';
-    $('rb70').className='rb'; $('rb85').className='rb'; s('d_rst','Preencha os contratos vencendo'); s('d_rflt','');
-  } else {
-    pct=Math.round(rf/rt*100);
-    s('d_rpct',pct+'%');
-    $('renovBar').style.width=Math.min(pct,100)+'%';
-    $('renovBar').className='renov-bar-f'+(pct>=85?' ok85':pct>=70?' ok70':'');
-    $('rb70').className='rb'+(pct>=70?' on70':'');
-    $('rb85').className='rb'+(pct>=85?' on85':'');
-    s('d_rst',pct>=85?'✅ Meta cheia atingida':pct>=70?'🟡 Meta básica atingida':'⚠️ Abaixo da meta');
-    s('d_rflt',pct<85?'Faltam '+Math.max(Math.ceil(rt*0.85)-rf,0)+' renovações para 85%':'');
-  }
-  var rb=rt>0?(pct>=85?100:pct>=70?50:0):0, eq=0;
-  _rem={};
-  SLOTS.forEach(function(c){
-    var p='c'+c.k+'_', n=ii(p+'novas'), r=ii(p+'remat'), av=ii(p+'aval'), bv=calcBV(n+r), ba=av*10, t=bv+rb+ba;
-    s('r'+c.k+'_qtd',(n+r)+' vendas'); s('r'+c.k+'_v',fmt(bv));
-    var okMin=(n+r)>=MINIMO_IDEAL, tMin=okMin?'✅ atingido':'faltam '+(MINIMO_IDEAL-n-r);
-    var em=$('r'+c.k+'_min'); if(em){ em.textContent=tMin; em.className='rv '+(okMin?'min-ok':'min-no'); }
-    var dm=$('d_min'+c.k); if(dm){ dm.textContent=(n+r)+' / '+MINIMO_IDEAL+' planos'+(okMin?' ✅':''); dm.className='ss '+(okMin?'min-ok':'min-no'); } s('r'+c.k+'_r',fmt(rb)); s('r'+c.k+'_a',fmt(ba)); s('r'+c.k+'_t',fmt(t));
-    _rem[c.k]=t; eq+=t;
-  });
-  s('r_eq',fmt(eq));
-  atualizarFolha();
-}
-
-function recalcProd(){
-  var tot=gi('ou_prod'), cred=0, partes=[];
-  SLOTS.forEach(function(c){ var v=gi('c'+c.k+'_prod'); tot+=v; cred+=v*0.01; s('p_'+c.k,fmt(v)); s('pc_'+c.k,fmtd(v*0.01)); partes.push(sigla(c.nome)+' '+fmt(v)); });
-  s('p_out',fmt(gi('ou_prod')));
-  s('p_total',fmt(tot)); s('p_cred',fmtd(cred));
-  partes.push('Outros '+fmt(gi('ou_prod')));
-  s('p_break',partes.join(' · '));
-}
-
-function recalcRet(){
-  var ini=ii('ativos_inicio'), cancel=ii('cancelamentos'), rt=ii('renovTotal'), rf=ii('renovFeitos');
-  var nRen=rt>0?Math.max(rt-rf,0):0;
-  var entradas=ii('o_novas')+ii('o_remat');
-  SLOTS.forEach(function(c){ entradas+=ii('c'+c.k+'_novas')+ii('c'+c.k+'_remat'); });
-  var perdas=cancel+nRen, saldo=entradas-perdas, fim=ini+saldo;
-  s('d_ini',ini); s('d_fim',fim); s('d_entr',entradas); s('d_cancel',cancel); s('d_nren',nRen); s('d_perdas',perdas);
-  var sEl=$('d_saldo'); sEl.textContent=(saldo>=0?'+':'')+saldo; sEl.className='ret-num'+(saldo>0?' rpos':saldo<0?' rneg':' rneu2');
-  s('d_saldo_s',saldo>0?'a unidade cresceu!':saldo<0?'a unidade encolheu':'empatou');
-  if(ini>0){ var vp=(saldo/ini*100).toFixed(1).replace('.',','), sg=saldo>=0?'+':''; s('d_var','variação: '+sg+saldo+' ('+sg+vp+'%)'); }
-  else s('d_var','calculado automaticamente');
-  var a=$('retAlerta');
-  if(ini===0){ a.className='reta reta-vazio'; s('retIcon','📊'); s('retMsg','Aguardando dados'); s('retSub','Preencha para ver o crescimento da base'); s('retPct',''); }
-  else {
-    var pc=(saldo/ini*100).toFixed(1).replace('.',',');
-    if(saldo>0){a.className='reta reta-ok';s('retIcon','📈');s('retMsg','Base em crescimento!');s('retSub','A unidade está crescendo — mais entradas do que saídas!');s('retPct','+'+saldo+' alunos · +'+pc+'% crescimento líquido');}
-    else if(saldo<0){a.className='reta reta-neg';s('retIcon','🚨');s('retMsg','ATENÇÃO — Base encolhendo!');s('retSub','Precisamos vender mais, renovar mais e cancelar menos!');s('retPct',saldo+' alunos · '+pc+'% perda líquida');}
-    else{a.className='reta reta-neu';s('retIcon','➡️');s('retMsg','Base estabilizada');s('retSub','Entradas compensaram as saídas — vamos crescer!');s('retPct','Saldo zero — meta é crescimento positivo');}
-  }
-  if(ini===0){
-    s('canc_pct','—'); s('canc_status','—'); s('canc_hint','Preencha ativos dia 01');
-    $('cancBar').style.width='0%'; $('cb_meta').className='rb'; $('cb_super').className='rb'; s('cb_meta_val','—'); s('cb_super_val','—');
-  } else {
-    var cp=cancel/ini*100;
-    s('canc_pct',cp.toFixed(1).replace('.',',')+'%');
-    $('cancBar').style.width=Math.min(cp/6*100,100)+'%';
-    $('cancBar').className='renov-bar-f'+(cp<=3?' ok85':cp<=4?' ok70':'');
-    $('cb_meta').className='rb'+(cp<=4?' on70':''); $('cb_super').className='rb'+(cp<=3?' on85':'');
-    s('cb_meta_val',cp<=4?'✅ Atingida':'❌ Não atingida'); s('cb_super_val',cp<=3?'✅ Atingida':'❌ Não atingida');
-    s('canc_status',cp<=3?'🏆 Super meta atingida!':cp<=4?'✅ Meta atingida':'⚠️ Acima da meta');
-    s('canc_hint',cp>4?'Limite: '+Math.floor(ini*0.04)+' cancelamentos (4% de '+ini+')':'');
+function setUnlocked(on) {
+  isUnlocked = on;
+  document.querySelector('[data-tab="insights"]').classList.toggle('hidden-tab', !on);
+  $('liderOn').style.display = on ? 'inline-block' : 'none';
+  $('btnSair').style.display = on ? 'inline-block' : 'none';
+  if (!on) {
+    senhaLider = null;
+    ['preencherContent', 'liderancaContent', 'historicoTable', 'insightsContent'].forEach(id => $(id).innerHTML = '');
+    const a = document.querySelector('.nav button.active');
+    if (a && RESTRITAS.includes(a.dataset.tab)) switchTab('meta');
   }
 }
+function logout() { setUnlocked(false); toast('Área da líder fechada'); }
 
-// Bônus de meta: dividido entre as consultoras na proporção do que cada uma vendeu (Outros não entra)
-function atualizarFolha(){
-  var b=_bonusMeta, tot=0, geral=0, lista=[];
-  SLOTS.forEach(function(c){ tot+=gi('c'+c.k+'_v'); });
-  var fd=function(v){return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});};
-  SLOTS.forEach(function(c){
-    var v=gi('c'+c.k+'_v'), m=tot>0?Math.round(v/tot*b):0, r=_rem[c.k]||0;
-    s('f'+c.k+'_v',fmt(r)); s('f'+c.k+'_m',fmt(m)); s('f'+c.k+'_t',fmt(r+m)); s('f'+c.k+'_c',fd(gi('c'+c.k+'_prod')*0.01));
-    geral+=r+m;
-    lista.push({c:c,v:v,b:m});
-  });
-  s('f_geral',fmt(geral));
-  atualizarRanking(lista,tot,b);
-}
-
-function atualizarRanking(lista,total,bonusTotal){
-  var el=$('rankingLista'), med=['🥇','🥈','🥉'];
-  lista.sort(function(a,b){return b.v-a.v;});
-  if(total===0){ el.innerHTML='<div style="text-align:center;font-size:13px;color:rgba(255,255,255,.35);padding:.5rem">Preencha os dados para ver o ranking</div>'; }
-  else el.innerHTML=lista.map(function(x,i){
-    var pct=(x.v/total*100).toFixed(1).replace('.',','), w=Math.round(x.v/total*100);
-    return '<div style="background:rgba(255,255,255,.07);border-radius:12px;padding:10px 12px;border:1px solid '+(i===0&&x.v>0?'rgba(245,158,11,.5)':'rgba(255,255,255,.12)')+'">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px">'+
-      '<div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="font-size:18px;width:22px">'+(x.v>0&&med[i]?med[i]:'')+'</span>'+
-      '<div style="width:26px;height:26px;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.08);border:1.5px solid '+cor(x.c).rk+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff">'+esc(sigla(x.c.nome))+'</div>'+
-      '<div style="min-width:0"><div style="font-size:13px;font-weight:700;color:#fff">'+esc(x.c.nome)+'</div><div style="font-size:11px;color:rgba(255,255,255,.5)">'+fmt(x.v)+'</div></div></div>'+
-      '<div style="text-align:right"><div style="font-size:16px;font-weight:800;color:'+(x.v>0?'#f59e0b':'rgba(255,255,255,.2)')+'">'+pct+'%</div>'+
-      (bonusTotal>0&&x.v>0?'<div style="font-size:11px;color:#fbbf24;font-weight:600">+'+fmt(x.b)+'</div>':'')+'</div></div>'+
-      '<div style="height:4px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden"><div style="height:100%;width:'+w+'%;background:'+(i===0?'linear-gradient(90deg,#f59e0b,#fbbf24)':'linear-gradient(90deg,#6b7280,#9ca3af)')+';border-radius:99px"></div></div></div>';
-  }).join('');
-  lista.forEach(function(x,i){ s('rank_'+x.c.k,(x.v>0&&total>0&&med[i])?med[i]:''); });
-}
-
-// ---------- campos ----------
-(function(){
-  var pg=$('page-preencher');
-  pg.addEventListener('input',function(e){ if(e.target.tagName==='INPUT' && e.target.id!=='nomeInput') recalc(); });
-  pg.addEventListener('focusin',function(e){ var t=e.target; if(t.classList && t.classList.contains('money')){ if(parseBR(t.value)===0) t.value=''; setTimeout(function(){ try{t.select();}catch(x){} },0); } });
-  pg.addEventListener('focusout',function(e){ var t=e.target; if(t.classList && t.classList.contains('money')){ t.value=fmtMoneyInput(parseBR(t.value)); recalc(); } });
-})();
-function getSnap(){
-  var o={};
-  idsAtivos().forEach(function(id){ o[id]= isMoney(id) ? gi(id) : ii(id); });
-  SLOTS.forEach(function(c){ o['c'+c.k+'_nome']=c.nome; });
-  return o;
-}
-function limparCampos(){ idsAtivos().forEach(function(id){ var e=$(id); if(e) e.value = isMoney(id) ? '0,00' : 0; }); recalc(); }
-function applySnap(v){
-  if(!v) return;
-  idsAtivos().forEach(function(id){ var e=$(id); if(!e) return; var x=parseBR(v[id]); e.value = isMoney(id) ? fmtMoneyInput(x) : Math.round(x); });
-  recalc();
-}
-
-// ---------- carregar ----------
-function carregarDados(){
-  var mes=getMesSelecionado();
-  ss('spin','Sincronizando...');
-  _lastMeta=-1;  // não soltar confete ao carregar
-  return Promise.all([
-      apiGet({action:'config',mes:mes}).catch(function(){ return null; }),
-      apiGet({action:'carregar',mes:mes})
-    ])
-    .then(function(res){
-      var cfg=(res[0] && res[0].ok) ? res[0] : null, regs=res[1];
-      if(!Array.isArray(regs)) throw new Error((regs&&regs.msg)||'resposta inválida');
-      SLOTS=slotsDe(cfg, regs[0]);
-      aplicarConfig(cfg, mes);
-      renderHistorico(regs);
-      if(regs.length){
-        var r=regs[0]; applySnap(r);
-        var info=esc(r.nome||'?')+(r.hora?' às '+esc(r.hora):'');
-        ss('ok','Sincronizado · '+(r.nome||'?')+(r.hora?' às '+r.hora:''));
-        $('ultimoSalvo').innerHTML='Último: <strong>'+info+'</strong>'; $('ch_ult').innerHTML='Último: '+info;
-      } else {
-        limparCampos();
-        ss('ok','Conectado · sem registros neste mês');
-        $('ultimoSalvo').textContent='Nenhum registro neste mês'; $('ch_ult').textContent='Nenhum registro ainda';
-      }
-    })
-    .catch(function(e){ ss('err','Erro ao sincronizar — '+(e&&e.message?e.message:'verifique a conexão')); recalc(); })
-    .then(function(){
-      var total=totalVendido();
-      _lastMeta=total>=SU?3:total>=M2?2:total>=M1?1:0;
-      if($('page-lider').classList.contains('active')) carregarLider();
-    });
-}
-function renderHistorico(regs){
-  var list=$('hlist');
-  if(!regs.length){ list.innerHTML='<div class="hvazio">Nenhum registro neste mês</div>'; return; }
-  list.innerHTML=regs.map(function(r){
-    var partes=[];
-    for(var k=1;k<=MAX_SLOTS;k++){
-      var v=parseBR(r['c'+k+'_v']); if(!v) continue;
-      var slot=SLOTS.filter(function(c){return c.k===k;})[0];
-      var nm=r['c'+k+'_nome'] || (slot?slot.nome:'C'+k);
-      partes.push(esc(sigla(nm))+': '+fmt(v));
-    }
-    return '<div class="hi"><div><div class="hin">'+esc(r.nome)+'</div><div class="hid">'+esc(r.data||'')+(r.hora?' às '+esc(r.hora):'')+'</div></div>'+
-      '<div><div class="hit">'+fmt(parseBR(r.total))+'</div><div class="hiv">'+partes.join(' · ')+'</div></div></div>';
-  }).join('');
-}
-function carregarHistorico(){
-  var mes=getMesSelecionado();
-  $('hlist').innerHTML='<div class="hvazio">Carregando...</div>';
-  apiGet({action:'carregar',mes:mes}).then(function(regs){ renderHistorico(Array.isArray(regs)?regs:[]); })
-    .catch(function(){ $('hlist').innerHTML='<div class="hvazio">Erro ao carregar</div>'; });
-}
-
-function trocarMes(){
-  _mesAnterior=getMesSelecionado();
-  carregarDados();
-}
-
-// ---------- salvar ----------
-function salvar(){
-  var nome=$('nomeInput').value.trim();
-  if(!nome){ toast('Digite seu nome antes de salvar ✍️','#dc2626'); return; }
-  var mes=getMesSelecionado(), senha=getSenhas()[mes];
-  if(!senha){ pedirSenha(mes); return; }
-  if(STATUS_MES==='FECHADO'){ toast('🔒 Mês fechado — não é possível salvar','#dc2626'); return; }
-  var agora=new Date(), hora=agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  var dr=$('dataRef').value;
-  if(!dr || dr<$('dataRef').min || dr>$('dataRef').max){ toast('Escolha um dia dentro do mês selecionado 📅','#dc2626'); return; }
-  var dp=dr.split('-'), data=dp[2]+'/'+dp[1]+'/'+dp[0];
-  var dados=getSnap(); dados.nome=nome; dados.data=data; dados.hora=hora; dados.total=totalVendido();
-  var btn=$('btnSalvar'); btn.disabled=true; btn.textContent='Salvando...';
-  ss('spin','Salvando no Google Sheets...');
-  apiPost({action:'salvar',senha:senha,dados:dados}).then(function(r){
-    if(r && r.ok){
-      toast('✅ Salvo! '+nome+' · '+hora);
-      ss('ok','Sincronizado · '+nome+' às '+hora);
-      $('nomeInput').value='';
-      $('ultimoSalvo').innerHTML='Último: <strong>'+esc(nome)+'</strong> às <strong>'+hora+'</strong>';
-      $('ch_ult').textContent='Salvo por '+nome+' às '+hora;
-      carregarHistorico();
-    } else {
-      var msg=(r&&r.msg)||'Não foi possível salvar.';
-      toast('⚠️ '+msg,'#dc2626'); ss('err',msg);
-      if(r && r.erro==='senha'){ setSenha(mes,null); pedirSenha(mes); }
-      if(r && r.erro==='fechado'){ carregarDados(); }
-    }
-  }).catch(function(){ toast('Erro ao salvar. Verifique a conexão.','#dc2626'); ss('err','Erro de conexão'); })
-  .then(function(){ btn.disabled=(STATUS_MES==='FECHADO'); btn.textContent='💾 Salvar'; });
-}
-
-// ---------- acesso ----------
-function mostrarErroLogin(msg){ var er=$('serr'); er.textContent=msg; er.style.display='block'; }
-function pedirSenha(mes){
-  _mesPendente = mes || getMesSelecionado();
-  var lbl=MESES[ABREV.indexOf(_mesPendente.split('/')[0])]+' '+_mesPendente.split('/')[1];
-  s('sboxSub','Área da líder — senha de '+lbl);
-  $('overlay').style.display='flex'; $('sinp').value=''; $('serr').style.display='none';
-  setTimeout(function(){$('sinp').focus();},100);
-}
-function entrar(){
-  var senha=$('sinp').value.trim();
-  if(!senha){ mostrarErroLogin('Digite a senha.'); return; }
-  var mes=_mesPendente||getMesSelecionado();
-  var btn=$('btnEntrar'); btn.disabled=true; btn.textContent='Verificando...';
-  apiPost({action:'login',mes:mes,senha:senha}).then(function(r){
-    if(r && r.ok){
-      setSenha(mes,senha);
-      _modoEdicao=true; _mesPendente=null;
-      $('overlay').style.display='none'; $('modobar').style.display='none'; $('liderbar').style.display='flex';
-      $('tabColeta').classList.remove('hid'); $('tabLider').classList.remove('hid');
-      if(getMesSelecionado()!==mes) $('mesSeletor').value=mes;
-      _mesAnterior=mes;
-      var naLider=$('page-lider').classList.contains('active');
-      carregarDados();
-      if(!naLider) $('tabColeta').click();
-    } else {
-      mostrarErroLogin((r&&r.msg)||'Senha incorreta.');
-      $('sinp').value=''; $('sinp').focus();
-    }
-  }).catch(function(){ mostrarErroLogin('Sem conexão com a planilha. Tente de novo.'); })
-  .then(function(){ btn.disabled=false; btn.textContent='🔐 Entrar para editar'; });
-}
-function visualizar(){
-  // fechar a tela de senha sem entrar: volta ao mês que estava aberto
-  $('overlay').style.display='none';
-  _mesPendente=null;
-  if(getMesSelecionado()!==_mesAnterior){ $('mesSeletor').value=_mesAnterior; }
-}
-function sairLider(){
-  setSenha(getMesSelecionado(),null);
-  try{ sessionStorage.removeItem('gb_senhas'); }catch(e){}
-  _modoEdicao=false;
-  $('tabColeta').classList.add('hid'); $('tabLider').classList.add('hid');
-  $('liderConteudo').innerHTML='';
-  $('modobar').style.display='flex';
-  $('liderbar').style.display='none';
-  goTab('meta',document.querySelector('.tab'));
-}
-
-// ---------- inicialização ----------
-(function(){
-  aplicarConfig(null, MES_HOJE);
-  if(Object.keys(getSenhas()).length){   // líder já entrou nesta aba do navegador
-    _modoEdicao=true;
-    $('modobar').style.display='none'; $('liderbar').style.display='flex';
-    $('tabColeta').classList.remove('hid'); $('tabLider').classList.remove('hid');
-  }
-  ss('spin','Conectando...');
-  carregarMeses().then(function(ok){
-    if(ok) carregarDados();              // todo mundo vê o painel direto, sem senha
-    else ss('err','Nenhum mês aberto no momento');
-  }).catch(function(){ ss('err','Erro ao conectar com a planilha'); });
-})();
-
-// ---------- ABA LÍDER (cálculo feito no servidor, só com senha) ----------
-function carregarLider(){
-  var mes=getMesSelecionado(), senha=getSenhas()[mes], el=$('liderConteudo');
-  if(!senha){
-    el.innerHTML='<div class="hbox"><div class="hvazio">🔐 Para ver o desempenho da líder em '+esc(rotulo(mes))+', digite a senha deste mês.<br><br><button class="hbtn" onclick="pedirSenha()">Digitar senha</button></div></div>';
-    return;
-  }
-  el.innerHTML='<div class="hbox"><div class="hvazio">Calculando...</div></div>';
-  apiPost({action:'lider',mes:mes,senha:senha}).then(function(r){
-    if(!r || !r.ok){
-      if(r && r.erro==='senha') setSenha(mes,null);
-      el.innerHTML='<div class="hbox"><div class="hvazio">⚠️ '+esc((r&&r.msg)||'Não foi possível carregar.')+'</div></div>';
+// ==================== INIT / LOAD ====================
+async function init() {
+  setGreeting();
+  try {
+    const meses = await apiGet({ action: 'meses' });
+    const lista = Array.isArray(meses) ? meses.slice().sort((a, b) => mesKey(a) - mesKey(b)) : [];
+    const sel = $('monthSelect');
+    lista.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; sel.appendChild(o); });
+    if (!lista.length) {
+      $('monthStatus').textContent = 'Nenhum mês aberto';
+      $('metaProgresso').innerHTML = '<div class="alert alert-warning">Nenhum mês está ABERTO na planilha. Peça à gestão para abrir o mês na aba CONFIG.</div>';
       return;
     }
-    renderLider(r);
-  }).catch(function(){ el.innerHTML='<div class="hbox"><div class="hvazio">Erro de conexão.</div></div>'; });
+    sel.value = lista.includes(mesHoje()) ? mesHoje() : lista[lista.length - 1];
+    await loadMonth();
+  } catch (e) {
+    console.error(e);
+    $('monthStatus').textContent = 'Erro ao conectar';
+    $('metaProgresso').innerHTML = '<div class="alert alert-error">Não foi possível conectar com a planilha.</div>';
+  }
 }
-function pctBR(v){ return v==null ? '—' : v.toFixed(1).replace('.',',')+'%'; }
-function renderLider(r){
-  var P=r.politica, F=r.financeiro, V=r.vendas, C=r.cancelamento, R=r.renovacao;
-  var nomesMeta=['Meta 1','Meta 2','Meta 3'];
-  var finSub = F.nivel>=3 ? '🏆 Meta 3 atingida' : 'Faltam '+fmt(F.metas[F.nivel]-F.total)+' para '+nomesMeta[F.nivel];
-  var venSub = V.planos<P.vendasMin ? 'Faltam '+(P.vendasMin-V.planos)+' planos para ativar' : 'Faltam '+(V.proximo-V.planos)+' para +'+fmt(P.vendasPassoValor);
-  var canSub = C.pct==null ? 'Sem dados — preencha ativos dia 01' : C.cancelados+' de '+C.ativos+' ativos · limite 4%: '+Math.floor(C.ativos*0.04)+' · 3%: '+Math.floor(C.ativos*0.03);
-  var renSub = R.pct==null ? 'Sem dados — preencha contratos vencendo' : R.feitos+' de '+R.previstos+(R.pct<85?' · faltam '+Math.max(Math.ceil(R.previstos*0.85)-R.feitos,0)+' para 85%':'');
-  function card(t,m,v,sub,b){ return '<div class="li-card '+(b>0?'ok':'no')+'"><div class="li-t">'+t+'</div><div class="li-m">'+m+'</div><div class="li-v">'+v+'</div><div class="li-s">'+sub+'</div><div class="li-b">Bônus: '+fmt(b)+'</div></div>'; }
-  var base = r.temDados ? 'Base: último registro de '+esc(r.ultimo.nome)+' em '+esc(r.ultimo.data)+(r.ultimo.hora?' às '+esc(r.ultimo.hora):'') : 'Ainda não há registros neste mês.';
-  $('liderConteudo').innerHTML=
-    '<div class="motiv"><div class="mv-title">👑 Desempenho da liderança — '+esc(rotulo(r.mes))+'</div><div class="mv-data" style="margin-bottom:0">A líder responde pelo todo da unidade: consultoras + outros. '+base+'</div></div>'+
-    '<div class="lg">'+
-      card('Meta financeira','Meta 1: '+fmt(F.metas[0])+' · Meta 2: '+fmt(F.metas[1])+' · Meta 3: '+fmt(F.metas[2]),fmt(F.total),(F.total/F.metas[0]*100).toFixed(1).replace('.',',')+'% da Meta 1 · '+finSub,F.bonus)+
-      card('Novas vendas + rematrículas','Mín. '+P.vendasMin+' planos · +'+fmt(P.vendasPassoValor)+' a cada '+P.vendasPasso,V.planos+' planos',venSub,V.bonus)+
-      card('Taxa de cancelamento','≤3% → '+fmt(P.cancelamento[0][1])+' · ≤4% → '+fmt(P.cancelamento[1][1]),pctBR(C.pct),canSub,C.bonus)+
-      card('Taxa de renovação','≥85% → '+fmt(P.renovacao[0][1])+' · ≥70% → '+fmt(P.renovacao[1][1]),pctBR(R.pct),renSub,R.bonus)+
-    '</div>'+
-    '<div class="li-total"><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">💰 Total folha — liderança</div>'+
-      '<div class="li-total-v">'+fmt(r.totalFolha)+'</div>'+
-      '<div class="li-total-d">Financeiro '+fmt(F.bonus)+' + Vendas '+fmt(V.bonus)+' + Cancelamento '+fmt(C.bonus)+' + Renovação '+fmt(R.bonus)+'</div>'+
-      '<div class="li-total-d" style="color:#fdba74">📦 Crédito produtos (1% de "Outros"): '+fmtd(r.credito)+' — não entra na folha</div></div>'+
-    '<div class="card"><div class="ctitle">📋 Política de bonificação — liderança</div>'+
-      '<div class="pol"><b>Bônus financeiro (meta da unidade)</b><div>Meta 1 (100%) → '+fmt(P.financeiro[0])+' · Meta 2 (110%) → '+fmt(P.financeiro[1])+' · Meta 3 (120%) → '+fmt(P.financeiro[2])+'</div><small>Integral para a líder quando a unidade atinge a meta.</small></div>'+
-      '<div class="pol"><b>Bônus vendas (volume da unidade)</b><div>'+P.vendasMin+' vendas = '+fmt(P.vendasBase)+' · '+(P.vendasMin+P.vendasPasso)+' = '+fmt(P.vendasBase+P.vendasPassoValor)+' · '+(P.vendasMin+2*P.vendasPasso)+' = '+fmt(P.vendasBase+2*P.vendasPassoValor)+' · a cada '+P.vendasPasso+' vendas +'+fmt(P.vendasPassoValor)+' · abaixo de '+P.vendasMin+' = R$ 0</div><small>Soma de todos os planos da unidade (novos + rematrículas), incluindo "Outros".</small></div>'+
-      '<div class="pol"><b>Bônus cancelamento (taxa da unidade)</b><div>≤3% = '+fmt(P.cancelamento[0][1])+' · ≤4% = '+fmt(P.cancelamento[1][1])+' · acima de 4% = R$ 0</div><small>Cancelamentos ÷ ativos no início do mês × 100.</small></div>'+
-      '<div class="pol"><b>Bônus renovação (taxa da unidade)</b><div>≥85% = '+fmt(P.renovacao[0][1])+' · ≥70% = '+fmt(P.renovacao[1][1])+' · abaixo de 70% = R$ 0</div><small>Renovações efetivadas ÷ renovações previstas.</small></div>'+
-      '<div class="pol"><b>Crédito produtos (1%) — informativo</b><div>O crédito de "Outros" vai para a liderança.</div></div>'+
-    '</div>';
+function slotsDe(c, ultimo) {
+  let out = [];
+  if (c && Array.isArray(c.consultoras)) out = c.consultoras.filter(x => x && x.nome).map(x => ({ k: x.k, nome: x.nome }));
+  if (!out.length && ultimo) for (let k = 1; k <= 6; k++) if (ultimo['c' + k + '_nome']) out.push({ k, nome: String(ultimo['c' + k + '_nome']) });
+  if (!out.length) out = NOMES_PADRAO.map((n, i) => ({ k: i + 1, nome: n }));
+  return out;
+}
+async function loadMonth() {
+  const anterior = currentMonth;
+  currentMonth = $('monthSelect').value || currentMonth;
+  $('monthStatus').textContent = 'Carregando...';
+  try {
+    const [c, regs] = await Promise.all([apiGet({ action: 'config', mes: currentMonth }), apiGet({ action: 'carregar', mes: currentMonth })]);
+    if (!Array.isArray(regs)) throw new Error((regs && regs.msg) || 'Mês indisponível');
+    cfg = c && c.ok ? c : null;
+    records = regs;
+    SLOTS = slotsDe(cfg, records[0]);
+    $('monthStatus').textContent = currentMonth + ' — ' + records.length + ' registro(s)';
+    // A senha é por mês: ao trocar de mês, confere se a senha da líder vale para o novo mês
+    if (isUnlocked && anterior && anterior !== currentMonth) {
+      const r = await apiPost({ action: 'login', mes: currentMonth, senha: senhaLider }).catch(() => null);
+      if (!r || !r.ok) { setUnlocked(false); toast('A senha de ' + rotulo(currentMonth) + ' é diferente. Entre novamente.', '#c0392b'); }
+    }
+    renderAll();
+    const a = document.querySelector('.nav button.active');
+    if (a && isUnlocked && RESTRITAS.includes(a.dataset.tab)) switchTab(a.dataset.tab);
+  } catch (e) {
+    console.error(e);
+    records = []; $('monthStatus').textContent = 'Erro ao carregar: ' + e.message; renderAll();
+  }
 }
 
-
-// ---------- confete ----------
-(function(){
-  var canvas=null,ctx=null,particles=[],animId=null;
-  var CORES=['#f59e0b','#fbbf24','#22c55e','#3b82f6','#ef4444','#a855f7','#fff','#f97316'];
-  function init(){canvas=$('cc');if(canvas)ctx=canvas.getContext('2d');}
-  function resize(){if(canvas){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}}
-  window.addEventListener('resize',function(){init();resize();});
-  function mkP(x,y,fw){var a=Math.random()*Math.PI*2,sp=fw?(Math.random()*8+4):(Math.random()*4+2);return{x:x||Math.random()*(canvas?canvas.width:500),y:y||(fw?canvas.height*.5:-10),vx:Math.cos(a)*sp,vy:fw?Math.sin(a)*sp:(Math.random()*3+1),color:CORES[Math.floor(Math.random()*CORES.length)],size:Math.random()*8+4,life:1,decay:Math.random()*.015+.008,rot:Math.random()*360,rs:(Math.random()-.5)*10,shape:Math.random()>.5?'r':'c',g:.12};}
-  function fw(){var x=canvas.width*(.2+Math.random()*.6),y=canvas.height*(.1+Math.random()*.4);for(var i=0;i<60;i++)particles.push(mkP(x,y,true));}
-  function tick(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=particles.length-1;i>=0;i--){var p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.vx*=.98;p.life-=p.decay;p.rot+=p.rs;if(p.life<=0||p.y>canvas.height+20){particles.splice(i,1);continue;}ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);if(p.shape==='r')ctx.fillRect(-p.size/2,-p.size/4,p.size,p.size/2);else{ctx.beginPath();ctx.arc(0,0,p.size/2,0,Math.PI*2);ctx.fill();}ctx.restore();}if(particles.length>0)animId=requestAnimationFrame(tick);else{canvas.style.display='none';animId=null;}}
-  window.dispararConfete=function(emoji,msg,sub){
-    init();if(!canvas||!ctx)return;resize();canvas.style.display='block';particles=[];
-    for(var i=0;i<120;i++)particles.push(mkP());
-    var n=0,fi=setInterval(function(){fw();n++;if(n>=4)clearInterval(fi);},400);
-    s('celebE',emoji);s('celebM',msg);s('celebS',sub);
-    var card=$('celebCard');card.style.display='block';setTimeout(function(){card.style.display='none';},4000);
-    if(!animId)animId=requestAnimationFrame(tick);
-    setTimeout(function(){particles=[];canvas.style.display='none';},5500);
+// ==================== TOTAIS (último registro = acumulado do mês) ====================
+function metas() {
+  if (cfg && cfg.meta1) return [cfg.meta1, cfg.meta2 || Math.round(cfg.meta1 * 1.1), cfg.super || Math.round(cfg.meta1 * 1.2)];
+  return METAS_PADRAO;
+}
+function getTotals() {
+  const L = records.length ? records[0] : {};
+  const pessoas = SLOTS.map(c => {
+    const p = 'c' + c.k + '_';
+    const novas = num(L[p + 'novas']), remat = num(L[p + 'remat']), anuais = num(L[p + 'p']), vendas = novas + remat;
+    return { k: c.k, nome: c.nome, cor: corSlot(c.k), v: num(L[p + 'v']), novas, remat, anuais, aval: num(L[p + 'aval']), prod: num(L[p + 'prod']), vendas, percAnuais: vendas > 0 ? anuais / vendas * 100 : 0 };
+  });
+  const outros = { v: num(L.ov), novas: num(L.o_novas), remat: num(L.o_remat), anuais: num(L.op), aval: num(L.o_aval), prod: num(L.ou_prod) };
+  outros.vendas = outros.novas + outros.remat;
+  outros.percAnuais = outros.vendas > 0 ? outros.anuais / outros.vendas * 100 : 0;
+  const totalEquipe = pessoas.reduce((s, p) => s + p.v, 0);
+  const totalVendas = pessoas.reduce((s, p) => s + p.vendas, 0) + outros.vendas;
+  const totalAnuais = pessoas.reduce((s, p) => s + p.anuais, 0) + outros.anuais;
+  return {
+    pessoas, outros, totalEquipe, totalMes: totalEquipe + outros.v, totalVendas, totalAnuais,
+    totalProdutos: pessoas.reduce((s, p) => s + p.prod, 0) + outros.prod,
+    percAnuais: totalVendas > 0 ? totalAnuais / totalVendas * 100 : 0,
+    renovTotal: num(L.renovTotal), renovFeitos: num(L.renovFeitos), ativosInicio: num(L.ativos_inicio), cancelamentos: num(L.cancelamentos)
   };
-})();
+}
+
+// ==================== REGRAS DE BÔNUS (CONSULTORAS) ====================
+// R$100 a cada 15 vendas completas; sobra de 10 a 14 acima de um bloco = R$5 por venda; abaixo de 15 = 0
+function calcBonusVendas(v) {
+  if (v < POLITICA.bloco) return 0;
+  const blocos = Math.floor(v / POLITICA.bloco), sobra = v % POLITICA.bloco;
+  return blocos * POLITICA.valorBloco + (sobra >= POLITICA.excedenteMin ? sobra * POLITICA.valorExcedente : 0);
+}
+function faixaMeta(total) { const [m1, m2, m3] = metas(); return total >= m3 ? 3 : total >= m2 ? 2 : total >= m1 ? 1 : 0; }
+function calcBonusMeta(valor, t) {
+  const f = faixaMeta(t.totalMes);
+  if (!f || t.totalEquipe === 0) return 0;
+  return Math.round(valor / t.totalEquipe * POLITICA.bonusMeta[f - 1] * 100) / 100;
+}
+function calcBonusRenov(t) {
+  if (!t.renovTotal) return 0;
+  const tx = t.renovFeitos / t.renovTotal * 100;
+  return tx >= 85 ? POLITICA.renov85 : tx >= 70 ? POLITICA.renov70 : 0;
+}
+
+// ==================== RENDER ALL ====================
+function renderAll() {
+  const t = getTotals();
+  renderUltimaApuracao(); renderMeta(t); renderRetencao(t); renderFolha(t); renderProdutos(t);
+}
+function renderUltimaApuracao() {
+  const el = $('ultimaApuracao');
+  if (records.length) { const r = records[0]; el.textContent = 'Última apuração: ' + (r.nome || '—') + ' em ' + (r.data || '—') + (r.hora ? ' às ' + r.hora : ''); }
+  else el.textContent = 'Nenhuma apuração registrada neste mês';
+}
+
+// ==================== META FINANCEIRA ====================
+function renderMeta(t) {
+  const [m1, m2, m3] = metas();
+  const total = t.totalMes;
+  const perc = total > 0 ? Math.min(total / m1 * 100, 100) : 0;
+  const fillClass = total === 0 ? 'blue' : perc >= 100 ? 'green' : perc >= 70 ? 'gold' : 'red';
+  const b1 = total >= m1, b2 = total >= m2, b3 = total >= m3;
+  if (total > 0 && b1 && !confettiShown[currentMonth]) { confettiShown[currentMonth] = true; launchConfetti(); setTimeout(launchConfetti, 800); setTimeout(launchConfetti, 1600); }
+
+  let statusMsg = '', statusColor = '#888';
+  const falta = Math.max(m1 - total, 0);
+  if (total === 0) statusMsg = '📋 Aguardando dados do mês';
+  else if (b3) { statusMsg = '🏆🌟 SUPER META ATINGIDA! VOCÊS SÃO INCRÍVEIS! 🌟🏆'; statusColor = '#b8860b'; }
+  else if (b2) { statusMsg = '🔥 Meta 2 atingida! Parabéns à equipe!'; statusColor = '#e65100'; }
+  else if (b1) { statusMsg = '🎉 META 1 ATINGIDA!'; statusColor = '#2e7d32'; }
+  else if (perc >= 70) { statusMsg = '🔥 Quase lá! Faltam R$ ' + fmt(falta); statusColor = '#e65100'; }
+  else if (perc >= 40) { statusMsg = '👊 No ritmo! Faltam R$ ' + fmt(falta); statusColor = '#f57c00'; }
+  else { statusMsg = '⚠️ Atenção! Faltam R$ ' + fmt(falta); statusColor = '#c62828'; }
+
+  const badge = (cls, titulo, tituloOk, valor, ok) => {
+    const p = total > 0 ? Math.min(total / valor * 100, 100) : 0;
+    return `<div class="meta-badge ${cls}${ok ? ' meta-tingida-destaque' : ''}"><div class="meta-badge-title">${ok ? tituloOk : titulo}</div><div class="meta-badge-value">R$ ${fmt(valor)}</div><div class="meta-badge-pct">${pct(p)}%</div><div class="meta-badge-progress"><div class="meta-badge-fill" style="width:${p}%"></div></div></div>`;
+  };
+  $('metaProgresso').innerHTML = `
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-value" style="color:${b1 ? 'var(--green)' : '#c0392b'}">R$ ${fmt(total)}</div><div class="stat-label">Arrecadado</div></div>
+      <div class="stat-item"><div class="stat-value" style="color:${statusColor};font-size:1.6rem">${pct(perc)}%</div><div class="stat-label">Progresso (Meta 1)</div></div>
+      <div class="stat-item" style="flex:2"><div class="stat-value" style="color:${statusColor};font-size:1rem">${statusMsg}</div></div>
+    </div>
+    ${b1 ? '<div class="mes-bom-badge">🏆 MÊS BOM — META BATIDA! 🏆</div>' : ''}
+    <div class="progress-bar"><div class="fill ${fillClass}" style="width:${perc}%"></div></div>
+    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+      ${badge('meta-badge-1', 'Meta 1', '✅ Meta 1 ATINGIDA', m1, b1)}
+      ${badge('meta-badge-2', 'Meta 2', '✅ Meta 2 ATINGIDA', m2, b2)}
+      ${badge('meta-badge-3', 'Meta 3 — SUPER META', '🏆 SUPER META ATINGIDA!', m3, b3)}
+    </div>
+    ${total === 0 ? '<div style="margin-top:8px;font-size:0.82rem;color:var(--text-light)">Nenhum dado registrado neste mês ainda.</div>' : ''}
+    ${b3 ? '<div style="margin-top:12px;text-align:center;font-size:1.1rem;color:#b8860b;font-weight:700">🏆🏆🏆 A EQUIPE ATINGIU A SUPER META! PARABÉNS A TODOS! 🏆🏆🏆</div>' : b2 ? '<div style="margin-top:8px;text-align:center;font-size:0.95rem;color:#e65100;font-weight:700">🎯 Meta 2 atingida! Falta pouco para a SUPER META!</div>' : ''}`;
+
+  renderInsight(total, m1, perc);
+  renderQualidadeVenda(t);
+
+  $('cardsEquipe').innerHTML = t.pessoas.map(p => `
+    <div class="person-card" style="border-left-color:${p.cor}">
+      <div class="name">${esc(p.nome)}</div><div class="role">Consultora</div>
+      <div class="label">Vendas</div>
+      <div class="value" style="color:${p.v > 0 ? 'var(--green)' : '#c0392b'}">R$ ${fmt(p.v)}</div>
+      <div class="sub">Planos: ${p.vendas} | Anuais: ${p.anuais} (${pct(p.percAnuais)}%)</div>
+      <div class="sub" style="color:${p.vendas >= POLITICA.minimoIdeal ? 'var(--green)' : '#c0392b'};font-weight:700">${p.vendas} / ${POLITICA.minimoIdeal} planos (mínimo ideal)${p.vendas >= POLITICA.minimoIdeal ? ' ✅' : ''}</div>
+    </div>`).join('') + `
+    <div class="person-card" style="border-left-color:var(--gold)">
+      <div class="name">Outros</div><div class="role">Registro sem bônus folha</div>
+      <div class="label">Vendas</div>
+      <div class="value" style="color:${t.outros.v > 0 ? 'var(--green)' : '#c0392b'}">R$ ${fmt(t.outros.v)}</div>
+      <div class="sub">Planos: ${t.outros.vendas} | Unidade total: ${t.totalVendas}</div>
+    </div>`;
+
+  if (total === 0) {
+    $('ranking').innerHTML = '<div class="ranking-empty"><div class="big-emoji">🤝</div><p>Os dados aparecerão aqui assim que a apuração for feita.</p></div>';
+  } else {
+    const entries = t.pessoas.map(p => ({ name: p.nome, val: p.v, vendas: p.vendas }));
+    if (t.outros.v > 0) entries.push({ name: 'Outros', val: t.outros.v, vendas: t.outros.vendas, isOutros: true });
+    entries.sort((a, b) => b.val - a.val);
+    const medals = ['🥇', '🥈', '🥉'], labels = ['Campeã do mês!', 'Seguindo firme!', 'Na disputa!'], cls = ['gold', 'silver', 'bronze'];
+    $('ranking').innerHTML = '<div class="ranking-container">' + entries.map((it, i) => {
+      const p = it.val / total * 100;
+      return `<div class="ranking-card ${cls[i] || 'silver'}" style="${it.isOutros ? 'border:2px solid #999;' : ''}${b1 ? '' : 'opacity:.85'}">
+        <div class="medal" style="${b1 ? '' : 'filter:grayscale(100%)'}">${b1 ? (medals[i] || '🏅') : '🏅'}</div>
+        <div class="rank-name">${esc(it.name)}</div>
+        <div class="rank-pct">${pct(p)}% da participação</div>
+        <div class="rank-value">R$ ${fmt(it.val)}</div>
+        <div class="rank-bar"><div class="fill" style="width:${p}%"></div></div>
+        <div class="rank-detail">${it.vendas} vendas${it.isOutros ? '' : ' · Bônus vendas: R$ ' + fmt(calcBonusVendas(it.vendas))}</div>
+        <div class="rank-detail" style="font-weight:700;color:${b1 && i === 0 ? '#b7791f' : '#888'}">${b1 ? (it.isOutros ? 'Registro adicional' : (labels[i] || 'Na disputa!')) : 'Bater a meta para definir a campeã!'}</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  const dd = calcMetaDiaria(total);
+  const caixa = (cor, cor2, rot, diaria, saldo) => `<div class="stat-item" style="border-left:3px solid ${cor}"><div class="stat-label">${rot}</div><div class="stat-value" style="color:${cor2}">${saldo <= 0 ? '✅' : dd.dias > 0 ? 'R$ ' + fmt(diaria) : '—'}</div><div style="font-size:0.72rem;color:var(--text-light)">${saldo <= 0 ? 'Atingida!' : 'Saldo: R$ ' + fmt(saldo)}</div></div>`;
+  $('metaDiaria').innerHTML = `<div class="stats-row">
+      ${caixa('#4caf50', '#2e7d32', 'Meta Diária — Meta 1', dd.d1, dd.s1)}
+      ${caixa('#ffa726', '#e65100', 'Meta Diária — Meta 2', dd.d2, dd.s2)}
+      ${caixa('#e53935', '#c62828', 'Meta Diária — Meta 3 (SUPER META)', dd.d3, dd.s3)}
+      <div class="stat-item"><div class="stat-value">${dd.dias}</div><div class="stat-label">${dd.rotulo}</div></div>
+    </div>
+    <div style="font-size:.72rem;color:var(--text-light)">* Dias úteis contam de hoje até o fim do mês, sem sábados, domingos e feriados.</div>`;
+
+  renderMetaSemanal();
+}
+
+function calcMetaDiaria(total) {
+  const [m1, m2, m3] = metas();
+  const p = currentMonth.split('/'), idx = ABREV.indexOf(p[0]), ano = +p[1];
+  const fim = new Date(ano, idx + 1, 0), hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const dif = mesKey(currentMonth) - mesKey(mesHoje());
+  let dias = 0, rot = 'Dias Úteis Restantes';
+  if (dif < 0) rot = 'Mês encerrado';
+  else dias = contarUteis(dif === 0 ? hoje : new Date(ano, idx, 1), fim);
+  const s1 = Math.max(m1 - total, 0), s2 = Math.max(m2 - total, 0), s3 = Math.max(m3 - total, 0);
+  const d = s => dias > 0 ? Math.ceil(s / dias) : 0;
+  return { s1, s2, s3, d1: d(s1), d2: d(s2), d3: d(s3), dias, rotulo: rot };
+}
+
+// Acumulado no fim de um dia = apuração mais recente com data <= dia
+function totalAte(dia) {
+  const lim = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate());
+  for (const r of records) {
+    const d = parseData(r.data);
+    if (d && d <= lim) { let s = num(r.ov); for (let k = 1; k <= 6; k++) s += num(r['c' + k + '_v']); return s; }
+  }
+  return 0;
+}
+function renderMetaSemanal() {
+  if (currentMonth !== mesHoje()) { $('metaSemanal').innerHTML = '<div class="alert alert-info">A meta semanal é acompanhada no mês vigente.</div>'; return; }
+  const [m1] = metas();
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  const diff = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  const ini = new Date(now); ini.setDate(now.getDate() - diff);
+  const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1), fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const vespera = new Date(ini); vespera.setDate(ini.getDate() - 1);
+  const totalSemana = Math.max(totalAte(now) - (vespera < inicioMes ? 0 : totalAte(vespera)), 0);
+  const uteisMes = contarUteis(inicioMes, fimMes);
+  const fimSemana = new Date(ini); fimSemana.setDate(ini.getDate() + 6);
+  const uteisSemana = contarUteis(ini < inicioMes ? inicioMes : ini, fimSemana > fimMes ? fimMes : fimSemana);
+  const metaSemanal = uteisMes > 0 ? Math.round(m1 * uteisSemana / uteisMes) : Math.round(m1 / 4);
+  const metaDia = uteisMes > 0 ? m1 / uteisMes : 0;
+  const progresso = metaSemanal > 0 ? totalSemana / metaSemanal * 100 : 0;
+  const labels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(ini); d.setDate(ini.getDate() + i);
+    const fora = d < inicioMes || d > fimMes, futuro = d > now, naoUtil = !isUtil(d);
+    const ant = new Date(d); ant.setDate(d.getDate() - 1);
+    const vDia = fora || futuro ? 0 : Math.max(totalAte(d) - (ant < inicioMes ? 0 : totalAte(ant)), 0);
+    let cls = 'future';
+    if (!naoUtil && !futuro && !fora) cls = vDia >= metaDia ? 'done' : vDia > 0 ? 'partial' : 'miss';
+    const hojeStyle = d.getTime() === now.getTime() ? 'border:2px solid var(--accent);font-weight:800' : '';
+    html += `<div class="day ${cls}" style="${hojeStyle}">${labels[d.getDay()]}${naoUtil || futuro || fora ? '' : '<br>R$' + fmt(vDia)}</div>`;
+  }
+  $('metaSemanal').innerHTML = `
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-value">R$ ${fmt(totalSemana)}</div><div class="stat-label">Arrecadado na Semana</div></div>
+      <div class="stat-item"><div class="stat-value">R$ ${fmt(metaSemanal)}</div><div class="stat-label">Meta Semanal</div></div>
+      <div class="stat-item"><div class="stat-value">${pct(progresso)}%</div><div class="stat-label">Progresso</div></div>
+    </div>
+    <div class="week-bar">${html}</div>
+    <div style="font-size:0.75rem;color:var(--text-light);margin-top:4px">
+      <span style="color:var(--green)">■ Meta do dia batida</span> &nbsp; <span style="color:var(--gold)">■ Parcial</span> &nbsp;
+      <span style="color:#e74c3c">■ Sem venda</span> &nbsp; <span style="color:#999">■ Fim de semana / feriado / futuro</span>
+    </div>
+    <div style="font-size:0.72rem;color:var(--text-light);margin-top:4px">* Valor do dia = acumulado daquele dia menos o acumulado do dia anterior.</div>`;
+}
+
+function renderInsight(total, m1, perc) {
+  if (total === 0) { $('insightBox').innerHTML = '<div class="insight-box" style="background:linear-gradient(135deg,#4a6fa5 0%,#6b8fc4 100%)"><strong>📊 Mês em andamento</strong>Nenhum dado registrado ainda. Os resultados aparecerão aqui assim que a apuração for feita.</div>'; return; }
+  const dd = calcMetaDiaria(total), saldo = Math.max(m1 - total, 0), planos = Math.ceil(saldo / POLITICA.planoAnualValor);
+  const reta = new Date().getDate() >= 20 && currentMonth === mesHoje();
+  let html;
+  if (perc >= 100) html = '<div class="insight-box"><strong>🎉 META ATINGIDA!</strong>Parabéns equipe! Vocês superaram a meta de R$ ' + fmt(m1) + '. Continuem firme para desbloquear a próxima faixa!</div>';
+  else if (reta) html = '<div class="insight-box"><strong>📊 Reta final do mês!</strong>Faltam R$ ' + fmt(saldo) + ' com ' + dd.dias + ' dias úteis. Meta diária: R$ ' + fmt(dd.d1) + '. 💡 ' + planos + ' plano(s) anual(is) resolve(m)! O plano anual é o caminho mais rápido para bater a meta.</div>';
+  else if (perc >= 50) html = '<div class="insight-box"><strong>👊 Bom ritmo!</strong>Vocês já estão em ' + pct(perc) + '% da meta. Meta diária ajustada: R$ ' + fmt(dd.d1) + '. Mantenham o foco nos planos anuais!</div>';
+  else html = '<div class="insight-box"><strong>🎯 Atenção!</strong>A meta está em ' + pct(perc) + '%. Faltam R$ ' + fmt(saldo) + '. Com ' + dd.dias + ' dias úteis, a meta diária é R$ ' + fmt(dd.d1) + '. 💡 Venda ' + planos + ' plano(s) anual(is) e a meta se aproxima!</div>';
+  $('insightBox').innerHTML = html;
+}
+
+function renderQualidadeVenda(t) {
+  if (!t.totalVendas) { $('planoAnualBox').innerHTML = ''; return; }
+  $('planoAnualBox').innerHTML = `
+    <div class="plano-anual">
+      <strong>🎯 Qualidade de Venda — Planos Anuais</strong>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:8px;font-size:0.88rem">
+        <div><strong>Unidade:</strong> ${t.totalAnuais} anuais de ${t.totalVendas} planos (${pct(t.percAnuais)}%)</div>
+        ${t.pessoas.map(p => `<div><strong>${esc(p.nome)}:</strong> ${p.anuais} de ${p.vendas} (${pct(p.percAnuais)}%)</div>`).join('')}
+        <div><strong>Outros:</strong> ${t.outros.anuais} de ${t.outros.vendas} (${pct(t.outros.percAnuais)}%)</div>
+      </div>
+      <div class="progress-bar" style="background:rgba(255,255,255,.3)"><div class="fill" style="width:${Math.min(t.percAnuais, 100)}%;background:${t.percAnuais >= 70 ? '#fff' : '#ffe082'}"></div></div>
+      <span style="font-size:0.8rem;opacity:0.9">Meta de qualidade: 70% das vendas sendo planos anuais</span>
+    </div>`;
+}
+
+// ==================== RETENÇÃO ====================
+function renderRetencao(t) {
+  const base = t.ativosInicio, novas = t.totalVendas;
+  const baseFinal = base - t.cancelamentos - t.renovTotal + t.renovFeitos + novas;
+  const variacao = base > 0 ? (baseFinal - base) / base * 100 : 0;
+  $('crescimentoBase').innerHTML = `
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-value">${base}</div><div class="stat-label">Ativos Início</div></div>
+      <div class="stat-item"><div class="stat-value">${baseFinal}</div><div class="stat-label">Base Líquida Final</div></div>
+      <div class="stat-item"><div class="stat-value" style="color:${variacao >= 0 ? 'var(--green)' : '#c0392b'}">${variacao > 0 ? '+' : ''}${pct(variacao)}%</div><div class="stat-label">Variação</div></div>
+    </div>
+    <div class="progress-bar"><div class="fill ${variacao >= 0 ? 'green' : 'red'}" style="width:${Math.min(Math.abs(variacao) * 5, 100)}%"></div></div>`;
+
+  const tx = t.renovTotal > 0 ? t.renovFeitos / t.renovTotal * 100 : 0;
+  let info;
+  if (!t.renovTotal) info = '<div class="alert alert-info">Sem dados de renovação neste mês.</div>';
+  else if (tx >= 85) info = '<div class="alert alert-success">✅ Taxa de renovação ≥ 85% — Bônus de R$ ' + POLITICA.renov85 + ' por consultora</div>';
+  else if (tx >= 70) info = '<div class="alert alert-warning">⚠️ Taxa de renovação ≥ 70% — Bônus de R$ ' + POLITICA.renov70 + ' por consultora. Faltam ' + Math.max(Math.ceil(t.renovTotal * 0.85) - t.renovFeitos, 0) + ' renovações para 85%.</div>';
+  else info = '<div class="alert alert-error">❌ Taxa de renovação abaixo de 70% — Sem bônus. Faltam ' + Math.max(Math.ceil(t.renovTotal * 0.7) - t.renovFeitos, 0) + ' renovações para 70%.</div>';
+  $('renovacoes').innerHTML = `<div class="stats-row">
+      <div class="stat-item"><div class="stat-value">${t.renovTotal}</div><div class="stat-label">Previstas no Mês</div></div>
+      <div class="stat-item"><div class="stat-value" style="color:${tx >= 70 ? 'var(--green)' : '#c0392b'}">${t.renovFeitos}</div><div class="stat-label">Efetivadas</div></div>
+      <div class="stat-item"><div class="stat-value" style="color:${tx >= 70 ? 'var(--green)' : '#c0392b'}">${pct(tx)}%</div><div class="stat-label">Taxa de Renovação</div></div>
+    </div>${info}`;
+
+  const cp = base > 0 ? t.cancelamentos / base * 100 : null;
+  let cinfo = '';
+  if (cp !== null) cinfo = cp <= 3 ? '<div class="alert alert-success">✅ Taxa ≤ 3% — Excelente!</div>' : cp <= 4 ? '<div class="alert alert-warning">⚠️ Taxa ≤ 4% — Atenção, perto do limite.</div>' : '<div class="alert alert-error">❌ Taxa acima de 4% — Atenção! Limite de 4%: ' + Math.floor(base * 0.04) + ' cancelamentos.</div>';
+  $('cancelamentosBox').innerHTML = `<div class="stats-row">
+      <div class="stat-item"><div class="stat-value">${base}</div><div class="stat-label">Ativos Início</div></div>
+      <div class="stat-item"><div class="stat-value" style="color:#c0392b">${t.cancelamentos}</div><div class="stat-label">Cancelamentos</div></div>
+      <div class="stat-item"><div class="stat-value" style="color:${cp !== null && cp <= 4 ? 'var(--green)' : '#c0392b'}">${cp === null ? '—' : pct(cp) + '%'}</div><div class="stat-label">Taxa (%)</div></div>
+    </div>${cinfo}`;
+
+  $('baseLiquida').innerHTML = `
+    <div class="table-wrap"><table>
+      <tr><th>Indicador</th><th>Valor</th><th>Impacto</th></tr>
+      <tr><td>Ativos no início do mês</td><td>${base}</td><td>—</td></tr>
+      <tr><td>Cancelamentos</td><td>${t.cancelamentos}</td><td style="color:#e74c3c">-${t.cancelamentos}</td></tr>
+      <tr><td>Renovações previstas (saem da base)</td><td>${t.renovTotal}</td><td style="color:#e74c3c">-${t.renovTotal}</td></tr>
+      <tr><td>Renovações efetivadas (retornam à base)</td><td>${t.renovFeitos}</td><td style="color:var(--green)">+${t.renovFeitos}</td></tr>
+      <tr><td>Novas vendas + rematrículas</td><td>${novas}</td><td style="color:var(--green)">+${novas}</td></tr>
+      <tr><td><strong>Base líquida final</strong></td><td><strong>${baseFinal}</strong></td><td><strong>${variacao > 0 ? '+' : ''}${pct(variacao)}%</strong></td></tr>
+    </table></div>
+    ${base === 0 ? '' : variacao < 0 ? '<div class="tip-box" style="margin-top:12px"><strong>💡 Insight:</strong> A base diminuiu. Seriam necessárias ' + Math.ceil(base - baseFinal) + ' novas vendas para voltar ao tamanho do início do mês.</div>' : '<div class="alert alert-success" style="margin-top:12px">A unidade cresceu! Parabéns!</div>'}`;
+}
+
+// ==================== FOLHA ====================
+function getDesempenho(v) {
+  if (v >= 80) return { label: '🌟 Excepcional', color: '#1b5e20', desc: 'Desempenho de alta performance!' };
+  if (v >= 70) return { label: '🔥 Acima da média', color: '#2e7d32', desc: 'Performance muito acima da média! Referência na equipe.' };
+  if (v >= 50) return { label: '✅ Bom desempenho', color: '#f57c00', desc: 'Acima do esperado. Segue firme!' };
+  if (v >= 40) return { label: '👍 No padrão', color: '#666', desc: 'Desempenho adequado. Vendas no padrão esperado.' };
+  if (v > 0) return { label: '⚠️ Abaixo do esperado', color: '#c62828', desc: 'Abaixo do mínimo de 40 planos — não cobre o próprio custo.' };
+  return { label: '📋 Sem dados', color: '#888', desc: 'Aguardando dados.' };
+}
+function renderFolha(t) {
+  const bonusRenov = calcBonusRenov(t);
+  const cor = v => v > 0 ? 'var(--green)' : '#c0392b';
+  let totalGeral = 0;
+  $('folhaPessoas').innerHTML = t.pessoas.map(p => {
+    const bMeta = calcBonusMeta(p.v, t), bVendas = calcBonusVendas(p.vendas), bAval = p.aval * POLITICA.aval;
+    const total = bMeta + bVendas + bonusRenov + bAval; totalGeral += total;
+    const part = t.totalEquipe > 0 ? p.v / t.totalEquipe * 100 : 0;
+    return `<div class="card"><h2>💰 Ganhos — ${esc(p.nome)}</h2>
+      <div class="stats-row">
+        <div class="stat-item"><div class="stat-value" style="color:${cor(bMeta)}">R$ ${fmt2(bMeta)}</div><div class="stat-label">Bônus Meta Financeira (${pct(part)}% de participação)</div></div>
+        <div class="stat-item"><div class="stat-value" style="color:${cor(bVendas)}">R$ ${fmt(bVendas)}</div><div class="stat-label">Bônus Novas Vendas e Rematrículas (${p.vendas} planos)</div></div>
+        <div class="stat-item"><div class="stat-value" style="color:${cor(bonusRenov)}">R$ ${fmt(bonusRenov)}</div><div class="stat-label">Bônus por Meta de Renovação</div></div>
+        <div class="stat-item"><div class="stat-value" style="color:${cor(bAval)}">R$ ${fmt(bAval)}</div><div class="stat-label">Bônus Avaliações (${p.aval} × R$${POLITICA.aval})</div></div>
+      </div>
+      <div style="margin-top:12px;text-align:center"><div style="font-size:1.3rem;color:var(--green);font-weight:800">R$ ${fmt2(total)}</div><div style="font-size:.75rem;color:var(--text-light);text-transform:uppercase">Total Geral Folha — ${esc(p.nome)}</div></div>
+      <div style="font-size:.75rem;color:var(--text-light);text-align:center;margin-top:4px">Crédito produtos (1%): R$ ${fmt2(p.prod * 0.01)} — não entra na folha</div>
+    </div>`;
+  }).join('');
+
+  $('resumoFolha').innerHTML = `
+    <div class="stats-row"><div class="stat-item"><div class="stat-value" style="color:var(--green)">R$ ${fmt2(totalGeral)}</div><div class="stat-label">Total folha — consultoras</div></div></div>
+    <h3 style="font-size:1.05rem;margin:16px 0 12px;color:var(--primary)">📋 Política de Bonificação</h3>
+    <div style="background:#f8f9ff;border-left:4px solid #3f51b5;padding:16px;margin-bottom:16px;border-radius:8px">
+      <div style="font-size:0.88rem;line-height:1.8"><strong>Bônus Meta Financeira (dividido proporcionalmente):</strong><br>
+        Meta 1 atingida → R$ 400 · Meta 2 → R$ 700 · Meta 3 → R$ 1.000, divididos pela participação de cada consultora<br>
+        <span style="color:#666;font-size:0.78rem">Exemplo: se a consultora vendeu 50% do total das consultoras, ela recebe 50% do bônus.</span></div>
+      <hr style="margin:10px 0;border:none;border-top:1px solid #e0e0e0">
+      <div style="font-size:0.88rem;line-height:1.8"><strong>Bônus Vendas (por volume individual):</strong><br>
+        15 vendas → R$ 100 | 30 vendas → R$ 200 | 45 vendas → R$ 300 | a cada 15 vendas completas +R$ 100<br>
+        Sobra de 10 a 14 vendas acima de um bloco de 15 → R$ 5 por venda (sobra de até 9 não gera excedente). Abaixo de 15 vendas = R$ 0.<br>
+        <span style="color:#666;font-size:0.78rem">Exemplo: 25 vendas = R$ 100 + 10 × R$ 5 = R$ 150. Considera novos + rematrículas de cada consultora.</span></div>
+      <hr style="margin:10px 0;border:none;border-top:1px solid #e0e0e0">
+      <div style="font-size:0.88rem;line-height:1.8"><strong>Bônus por Meta de Renovação (por consultora):</strong><br>Taxa ≥ 70% → R$ 50 | Taxa ≥ 85% → R$ 100<br><span style="color:#666;font-size:0.78rem">Calculado sobre a taxa de renovação da unidade inteira.</span></div>
+      <hr style="margin:10px 0;border:none;border-top:1px solid #e0e0e0">
+      <div style="font-size:0.88rem;line-height:1.8"><strong>Bônus Avaliação:</strong><br>R$ 10 por cada avaliação vendida (individual)</div>
+      <hr style="margin:10px 0;border:none;border-top:1px solid #e0e0e0">
+      <div style="font-size:0.88rem;line-height:1.8"><strong>Crédito Produtos (1%):</strong><br>1% do valor de produtos vendidos por cada pessoa. Crédito interno para consumo no sistema.</div>
+    </div>
+    <h3 style="font-size:1.05rem;margin-bottom:4px;color:var(--primary)">📊 Mínimo Ideal de Planos Vendidos: ${POLITICA.minimoIdeal} — abaixo disso a consultora não paga o próprio custo</h3>
+    <div class="stats-row">
+      ${t.pessoas.map(p => { const d = getDesempenho(p.vendas); return `<div class="stat-item" style="border-left:4px solid ${d.color}">
+        <div class="stat-label">${esc(p.nome)}</div>
+        <div class="stat-value" style="color:${d.color};font-size:1.1rem">${p.vendas} planos</div>
+        <div style="font-size:0.78rem;color:${d.color};margin-top:4px"><strong>${d.label}</strong></div>
+        <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">${d.desc}</div>
+        <div class="progress-bar" style="height:6px"><div class="fill ${p.vendas >= POLITICA.minimoIdeal ? 'green' : 'red'}" style="width:${Math.min(p.vendas / 80 * 100, 100)}%"></div></div>
+      </div>`; }).join('')}
+    </div>`;
+}
+
+// ==================== PRODUTOS ====================
+function renderProdutos(t) {
+  $('produtosTable').innerHTML = `
+    <div class="stats-row" style="margin-bottom:16px">
+      <div class="stat-item"><div class="stat-value">R$ ${fmt(t.totalProdutos)}</div><div class="stat-label">Total Produtos</div></div>
+      ${t.pessoas.map(p => `<div class="stat-item"><div class="stat-value">R$ ${fmt(p.prod)}</div><div class="stat-label">${esc(p.nome)}</div></div>`).join('')}
+      <div class="stat-item"><div class="stat-value">R$ ${fmt(t.outros.prod)}</div><div class="stat-label">Outros (Unidade)</div></div>
+    </div>
+    <h3 style="font-size:1rem;color:var(--primary)">💳 Crédito 1% por Pessoa</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Pessoa</th><th>Produtos Vendidos</th><th>Crédito (1%)</th></tr>
+      ${t.pessoas.map(p => `<tr><td>${esc(p.nome)}</td><td>R$ ${fmt2(p.prod)}</td><td><strong>R$ ${fmt2(p.prod * 0.01)}</strong></td></tr>`).join('')}
+      <tr style="background:#f0f0f0"><td><strong>Outros</strong></td><td><strong>R$ ${fmt2(t.outros.prod)}</strong></td><td><em>Crédito vai para a liderança</em></td></tr>
+    </table></div>`;
+}
+
+// ==================== HISTÓRICO (restrito) ====================
+function renderHistorico() {
+  if (!isUnlocked) return;
+  if (!records.length) { $('historicoTable').innerHTML = '<div class="alert alert-info">Nenhum registro encontrado neste mês.</div>'; return; }
+  $('historicoTable').innerHTML = `<div class="table-wrap"><table>
+    <tr><th>Nome</th><th>Data Apuração</th><th>Hora</th>${SLOTS.map(c => `<th>${esc(c.nome)} (R$)</th>`).join('')}<th>Outros (R$)</th><th>Total (R$)</th><th>Renov. Previstas</th><th>Renov. Efetivadas</th><th>Cancelamentos</th></tr>
+    ${records.map(r => `<tr><td>${esc(r.nome || '—')}</td><td>${esc(r.data || '—')}</td><td>${esc(r.hora || '—')}</td>
+      ${SLOTS.map(c => `<td>R$ ${fmt(num(r['c' + c.k + '_v']))}</td>`).join('')}
+      <td>R$ ${fmt(num(r.ov))}</td><td><strong>R$ ${fmt(num(r.total))}</strong></td><td>${fmt(num(r.renovTotal))}</td><td>${fmt(num(r.renovFeitos))}</td><td>${fmt(num(r.cancelamentos))}</td></tr>`).join('')}
+  </table></div>
+  <div style="font-size:.75rem;color:var(--text-light);margin-top:6px">Cada linha é uma apuração (valores acumulados até aquele dia). O painel usa sempre a apuração de data mais recente.</div>`;
+}
+
+// ==================== LIDERANÇA (cálculo no servidor) ====================
+async function renderLideranca() {
+  const el = $('liderancaContent');
+  if (!isUnlocked) return;
+  el.innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top:12px">Calculando...</p></div>';
+  let r;
+  try { r = await apiPost({ action: 'lider', mes: currentMonth, senha: senhaLider }); } catch (e) { el.innerHTML = '<div class="alert alert-error">Erro de conexão.</div>'; return; }
+  if (!r || !r.ok) { el.innerHTML = '<div class="alert alert-error">' + esc((r && r.msg) || 'Não foi possível carregar.') + '</div>'; if (r && r.erro === 'senha') setUnlocked(false); return; }
+  const P = r.politica, F = r.financeiro, V = r.vendas, C = r.cancelamento, R = r.renovacao;
+  const [m1, m2, m3] = F.metas;
+  const faixa = ['Nenhuma meta atingida', 'Meta 1', 'Meta 2', 'Meta 3'][F.nivel];
+  const refCanc = C.pct == null ? 'Sem dados' : C.pct <= 3 ? 'Meta 1 (≤3%)' : C.pct <= 4 ? 'Meta 2 (≤4%)' : 'Acima de 4% — sem bônus';
+  const refRenov = R.pct == null ? 'Sem dados' : R.pct >= 85 ? 'Meta 1 (≥85%)' : R.pct >= 70 ? 'Meta 2 (≥70%)' : 'Abaixo de 70% — sem bônus';
+  const ok = b => b > 0 ? 'var(--green)' : '#c0392b';
+  el.innerHTML = `
+    <div class="alert alert-info" style="margin-top:0">A líder responde pelo todo da unidade: consultoras + outros. ${r.temDados ? 'Base: apuração de ' + esc(r.ultimo.nome) + ' em ' + esc(r.ultimo.data) + (r.ultimo.hora ? ' às ' + esc(r.ultimo.hora) : '') : 'Ainda não há apurações neste mês.'}</div>
+    <h3 style="font-size:1.1rem;margin-bottom:16px;color:var(--primary)">📊 Indicadores de Performance — Liderança</h3>
+    <div class="card-grid" style="margin-bottom:20px">
+      <div class="person-card" style="border-left-color:var(--gold)">
+        <div class="name">Meta Financeira</div><div class="role" style="font-size:0.72rem">Meta 1: R$ ${fmt(m1)} | Meta 2: R$ ${fmt(m2)} | Meta 3: R$ ${fmt(m3)}</div>
+        <div class="value" style="color:${ok(F.bonus)}">R$ ${fmt(F.total)}</div>
+        <div class="sub">${pct(m1 ? F.total / m1 * 100 : 0)}% da Meta 1 — ${faixa}${F.nivel < 3 ? ' · faltam R$ ' + fmt(F.metas[F.nivel] - F.total) + ' para a Meta ' + (F.nivel + 1) : ''}</div>
+        <div style="font-size:0.78rem;color:${ok(F.bonus)};margin-top:4px">Bônus: R$ ${fmt(F.bonus)}</div>
+      </div>
+      <div class="person-card" style="border-left-color:var(--green)">
+        <div class="name">Novas Vendas e Rematrículas</div><div class="role" style="font-size:0.72rem">Meta: ≥${P.vendasMin} planos | A cada ${P.vendasPasso} +R$${P.vendasPassoValor}</div>
+        <div class="value" style="color:${ok(V.bonus)}">${V.planos} planos</div>
+        <div class="sub">${V.planos < P.vendasMin ? 'Faltam ' + (P.vendasMin - V.planos) + ' para ativar' : 'Faltam ' + (V.proximo - V.planos) + ' para +R$ ' + P.vendasPassoValor}</div>
+        <div style="font-size:0.78rem;color:${ok(V.bonus)};margin-top:4px">Bônus: R$ ${fmt(V.bonus)}</div>
+      </div>
+      <div class="person-card" style="border-left-color:var(--accent2)">
+        <div class="name">Taxa de Cancelamento</div><div class="role" style="font-size:0.72rem">Meta 1: ≤3% | Meta 2: ≤4%</div>
+        <div class="value" style="color:${ok(C.bonus)}">${C.pct == null ? '—' : pct(C.pct) + '%'}</div>
+        <div class="sub">${C.pct == null ? 'Sem dados' : C.cancelados + ' cancelados de ' + C.ativos + ' ativos · limite 3%: ' + Math.floor(C.ativos * 0.03) + ' · 4%: ' + Math.floor(C.ativos * 0.04)}</div>
+        <div style="font-size:0.78rem;color:${ok(C.bonus)};margin-top:4px">${refCanc} — Bônus: R$ ${fmt(C.bonus)}</div>
+      </div>
+      <div class="person-card" style="border-left-color:var(--accent)">
+        <div class="name">Taxa de Renovação</div><div class="role" style="font-size:0.72rem">Meta 1: ≥85% | Meta 2: ≥70%</div>
+        <div class="value" style="color:${ok(R.bonus)}">${R.pct == null ? '—' : pct(R.pct) + '%'}</div>
+        <div class="sub">${R.pct == null ? 'Sem dados' : R.feitos + ' renovados de ' + R.previstos + ' previstos' + (R.pct < 85 ? ' · faltam ' + Math.max(Math.ceil(R.previstos * 0.85) - R.feitos, 0) + ' para 85%' : '')}</div>
+        <div style="font-size:0.78rem;color:${ok(R.bonus)};margin-top:4px">${refRenov} — Bônus: R$ ${fmt(R.bonus)}</div>
+      </div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,#0f2d5a,#1a4a8a);color:#fff;text-align:center;border:2px solid #2d7ef7">
+      <div style="font-size:1.2rem;font-weight:700">💰 Total Final — Folha Liderança</div>
+      <div style="font-size:2.2rem;font-weight:900;color:#ffd166;margin:8px 0">R$ ${fmt(r.totalFolha)}</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.75)">Financeiro R$ ${fmt(F.bonus)} + Vendas R$ ${fmt(V.bonus)} + Cancelamento R$ ${fmt(C.bonus)} + Renovação R$ ${fmt(R.bonus)}</div>
+    </div>
+    <div class="card" style="background:#f5f5f5;border-left:4px solid #1b5e20">
+      <h2 style="font-size:1rem">📦 Crédito Produtos — Liderança (1% de "Outros")</h2>
+      <div class="stats-row"><div class="stat-item"><div class="stat-value">R$ ${fmt2(r.credito)}</div><div class="stat-label">Crédito interno — não entra na folha</div></div></div>
+    </div>
+    <div class="card">
+      <h2>📊 Detalhamento por Bônus (Folha)</h2>
+      <div class="table-wrap"><table>
+        <tr><th>Descrição</th><th>Valor</th><th>Condição</th></tr>
+        <tr><td>Bônus Financeiro (meta da unidade)</td><td><strong>R$ ${fmt(F.bonus)}</strong></td><td>${faixa}</td></tr>
+        <tr><td>Bônus Vendas (${V.planos} planos)</td><td><strong>R$ ${fmt(V.bonus)}</strong></td><td>≥${P.vendasMin} planos</td></tr>
+        <tr><td>Bônus Cancelamento (${C.pct == null ? '—' : pct(C.pct) + '%'})</td><td><strong>R$ ${fmt(C.bonus)}</strong></td><td>${refCanc}</td></tr>
+        <tr><td>Bônus Renovação (${R.pct == null ? '—' : pct(R.pct) + '%'})</td><td><strong>R$ ${fmt(R.bonus)}</strong></td><td>${refRenov}</td></tr>
+        <tr style="background:#f0f0f0"><td><strong>TOTAL FOLHA LIDERANÇA</strong></td><td><strong>R$ ${fmt(r.totalFolha)}</strong></td><td>—</td></tr>
+      </table></div>
+    </div>
+    <div class="card">
+      <h2>📋 Política de Bonificação — Liderança</h2>
+      <div class="tip-box"><strong>Bônus Financeiro (Meta da Unidade):</strong><br>Meta 1 → R$ ${fmt(P.financeiro[0])} | Meta 2 → R$ ${fmt(P.financeiro[1])} | Meta 3 → R$ ${fmt(P.financeiro[2])}<br><span style="color:#666;font-size:0.78rem">Bônus integral para a líder quando a unidade atinge a meta.</span></div>
+      <div class="tip-box"><strong>Bônus Vendas (Volume da Unidade):</strong><br>${P.vendasMin} vendas = R$ ${P.vendasBase} | ${P.vendasMin + P.vendasPasso} = R$ ${P.vendasBase + P.vendasPassoValor} | ${P.vendasMin + 2 * P.vendasPasso} = R$ ${P.vendasBase + 2 * P.vendasPassoValor} | a cada ${P.vendasPasso} vendas +R$ ${P.vendasPassoValor} | abaixo de ${P.vendasMin} = 0<br><span style="color:#666;font-size:0.78rem">Soma de todos os planos da unidade (novos + rematrículas), incluindo "Outros".</span></div>
+      <div class="tip-box"><strong>Bônus Cancelamento (Taxa da Unidade):</strong><br>≤3% = R$ 200 | ≤4% = R$ 100 | acima de 4% = 0<br><span style="color:#666;font-size:0.78rem">Calculado: (cancelamentos ÷ ativos no início do mês) × 100</span></div>
+      <div class="tip-box"><strong>Bônus Renovação (Taxa da Unidade):</strong><br>≥85% = R$ 200 | ≥70% = R$ 100 | abaixo de 70% = 0<br><span style="color:#666;font-size:0.78rem">Renovações efetivadas ÷ renovações previstas.</span></div>
+      <div class="tip-box"><strong>Crédito Produtos (1%) — Informativo:</strong><br>1% sobre o total de produtos vendidos por cada pessoa. O crédito de "Outros" vai para a liderança.</div>
+    </div>`;
+}
+
+// ==================== INSIGHTS (restrito) ====================
+async function renderInsights() {
+  const el = $('insightsContent');
+  if (!isUnlocked) return;
+  el.innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top:12px">Analisando dados históricos...</p></div>';
+  let r;
+  try { r = await apiPost({ action: 'resumo', mes: currentMonth, senha: senhaLider }); } catch (e) { el.innerHTML = '<div class="alert alert-error">Erro de conexão.</div>'; return; }
+  if (!r || !r.ok) { el.innerHTML = '<div class="alert alert-error">' + esc((r && r.msg) || 'Não foi possível carregar.') + '</div>'; return; }
+
+  const hist = r.meses.filter(m => m.ultimo).map(m => {
+    const L = m.ultimo, pessoas = {};
+    let total = num(L.ov), vendas = num(L.o_novas) + num(L.o_remat), anuais = num(L.op);
+    for (let k = 1; k <= 6; k++) {
+      const v = num(L['c' + k + '_novas']) + num(L['c' + k + '_remat']);
+      total += num(L['c' + k + '_v']); vendas += v; anuais += num(L['c' + k + '_p']);
+      pessoas[k] = { vendas: v, anuais: num(L['c' + k + '_p']) };
+    }
+    const ini = num(L.ativos_inicio), canc = num(L.cancelamentos), rt = num(L.renovTotal), rf = num(L.renovFeitos);
+    const baseFin = ini - canc - rt + rf + vendas;
+    return { mes: m.mes, meta: m.meta1 || METAS_PADRAO[0], total, vendas, anuais, ini, canc, rt, rf, pessoas, qual: vendas > 0 ? anuais / vendas * 100 : 0, varBase: ini > 0 ? (baseFin - ini) / ini * 100 : 0, cancTx: ini > 0 ? canc / ini * 100 : 0 };
+  });
+  const atual = hist.find(h => h.mes === currentMonth);
+  if (!atual) { el.innerHTML = '<div class="alert alert-info">Nenhum dado disponível para análise. Preencha os dados do mês para gerar insights.</div>'; return; }
+  const ate = hist.filter(h => mesKey(h.mes) <= mesKey(currentMonth));
+  const ult3 = ate.slice(-3);
+
+  let comp, compColor;
+  if (atual.ini === 0) { comp = '📋 Dados insuficientes para análise de composição. Preencha ativos início, cancelamentos e renovações.'; compColor = '#888'; }
+  else if (atual.varBase < 0) { comp = '📉 A base está encolhendo. Mais clientes saíram do que entraram. Se a retenção não melhorar, cada venda nova será anulada por uma saída. Prioridade: renovação e recuperação de cancelamentos.'; compColor = '#c62828'; }
+  else if (atual.varBase === 0) { comp = '➡️ Base estagnada. O que entra equilibra o que sai, mas não há crescimento real. Uma campanha de renovação antecipada ou mais prospecção pode virar a balança.'; compColor = '#f57c00'; }
+  else if (atual.rt > 0 && atual.rf >= atual.rt * 0.85 && atual.vendas > atual.canc) { comp = '🎯 Mês equilibrado: vendas e retenção trabalharam juntas. Novos clientes entraram e os existentes ficaram — a composição ideal.'; compColor = '#1b5e20'; }
+  else if (atual.vendas > atual.canc) { comp = '🚀 As novas vendas carregaram o crescimento, mas a retenção está frágil. Sem renovar melhor, a base vai sangrar nos próximos meses.'; compColor = '#e65100'; }
+  else { comp = '🛡️ A base cresceu sustentada pela retenção. Ótima gestão de quem já é cliente, mas a unidade precisa de prospecção ativa para não depender só disso.'; compColor = '#1b5e20'; }
+
+  const diag = SLOTS.map(c => {
+    const serie = ate.map(h => h.pessoas[c.k] || { vendas: 0, anuais: 0 });
+    const a = serie[serie.length - 1] || { vendas: 0, anuais: 0 };
+    const q = a.vendas > 0 ? a.anuais / a.vendas * 100 : 0;
+    const vs = serie.map(s => s.vendas);
+    let tend = 'estavel';
+    if (vs.length >= 3) { const [x, y, z] = vs.slice(-3); if (z > y && y > x) tend = 'melhorando'; else if (z < y && y < x) tend = 'piorando'; else if (z > y) tend = 'recuperando'; }
+    else if (vs.length === 2) { if (vs[1] > vs[0] * 1.15) tend = 'melhorando'; else if (vs[1] < vs[0] * 0.85) tend = 'piorando'; }
+    let msg;
+    if (a.vendas === 0) msg = 'Sem vendas registradas neste mês ainda.';
+    else if (a.vendas >= POLITICA.minimoIdeal && q >= 70) msg = `${c.nome} está no auge: ${a.vendas} planos com ${q.toFixed(0)}% de anuais. Fecha muito e fecha bem — use como referência para a equipe.`;
+    else if (a.vendas >= POLITICA.minimoIdeal) msg = `${c.nome} tem volume (${a.vendas} planos), mas só ${q.toFixed(0)}% de anuais. Cada mensal que poderia ser anual é receita futura perdida — treinar a apresentação do benefício do anual.`;
+    else if (q >= 70) msg = `${c.nome} tem qualidade excelente (${q.toFixed(0)}% de anuais), mas o volume (${a.vendas} planos) está abaixo do mínimo de ${POLITICA.minimoIdeal}. Ela sabe negociar; o gargalo é prospecção ou ritmo de atendimento.`;
+    else msg = `${c.nome} está abaixo do mínimo (${a.vendas} de ${POLITICA.minimoIdeal} planos) e com ${q.toFixed(0)}% de anuais. Conversa individual esta semana: leads, ritmo e abordagem de preço.`;
+    if (tend === 'melhorando') msg += '\n📈 Tendência: melhorando. Reconhecer publicamente.';
+    if (tend === 'piorando') msg += '\n📉 Tendência: queda nos últimos meses. Ação urgente: conversa individual esta semana.';
+    if (tend === 'recuperando') msg += '\n📊 Tendência: sinais de recuperação. Acompanhar de perto.';
+    return { nome: c.nome, vendas: a.vendas, q, tend, msg, color: getDesempenho(a.vendas).color };
+  });
+
+  const alertas = [];
+  if (ult3.length === 3) {
+    const [a, b, c] = ult3;
+    if (c.total < b.total && b.total < a.total) alertas.push({ t: '🔴 Receita em declínio', m: `${a.mes}: R$ ${fmt(a.total)} → ${b.mes}: R$ ${fmt(b.total)} → ${c.mes}: R$ ${fmt(c.total)}. Reunião de alinhamento e revisão da meta diária.`, c: '#c62828' });
+    if (c.qual < b.qual && b.qual < a.qual && c.qual < 70) alertas.push({ t: '🟠 Qualidade em erosão', m: `Planos anuais caíram de ${a.qual.toFixed(0)}% para ${c.qual.toFixed(0)}%. Treinar objeção de preço e benefício do anual.`, c: '#e65100' });
+    if (c.cancTx > b.cancTx && b.cancTx > a.cancTx && c.cancTx > 3) alertas.push({ t: '🟡 Fuga de clientes', m: `Cancelamento subindo: ${pct(a.cancTx)}% → ${pct(b.cancTx)}% → ${pct(c.cancTx)}%. Ligar para quem vence 15 dias antes do vencimento.`, c: '#f9a825' });
+  }
+  diag.filter(d => d.tend === 'piorando').forEach(d => alertas.push({ t: '👤 ' + d.nome + ' — queda sustentada', m: 'Vendas caindo nos últimos meses. Investigar motivação, leads e ritmo; acompanhar 3 fechamentos presenciais.', c: '#6a1b9a' }));
+
+  el.innerHTML = `
+    <div style="background:#f1f8e9;border-left:4px solid ${compColor};padding:16px;margin-bottom:16px;border-radius:8px">
+      <h3 style="font-size:1rem;margin-bottom:8px;color:${compColor}">📊 Composição de Crescimento — ${esc(currentMonth)}</h3>
+      <p style="font-size:0.9rem;line-height:1.6;margin:0">${comp}</p>
+      <div class="stats-row" style="margin-top:12px">
+        <div class="stat-item"><div class="stat-value" style="font-size:1rem">${atual.varBase >= 0 ? '+' : ''}${pct(atual.varBase)}%</div><div class="stat-label">Variação da Base</div></div>
+        <div class="stat-item"><div class="stat-value" style="font-size:1rem">${atual.rf}</div><div class="stat-label">Renovações Efetivadas</div></div>
+        <div class="stat-item"><div class="stat-value" style="font-size:1rem">${atual.canc}</div><div class="stat-label">Cancelamentos</div></div>
+        <div class="stat-item"><div class="stat-value" style="font-size:1rem">${atual.vendas}</div><div class="stat-label">Novas Vendas</div></div>
+      </div>
+    </div>
+    <h3 style="font-size:1rem;margin-bottom:12px;color:var(--primary)">👤 Diagnóstico Individual — Consultoras</h3>
+    <div class="stats-row">${diag.map(d => `<div class="stat-item" style="border-left:4px solid ${d.color};text-align:left;min-width:240px">
+        <div class="stat-label">${esc(d.nome)}</div>
+        <div class="stat-value" style="font-size:1.05rem;color:${d.color}">${d.vendas} planos · ${d.q.toFixed(0)}% anuais</div>
+        <div style="font-size:0.8rem;margin-top:6px;line-height:1.5;white-space:pre-line">${esc(d.msg)}</div></div>`).join('')}</div>
+    <h3 style="font-size:1rem;margin:16px 0 12px;color:var(--primary)">🚨 Alertas de Tendência</h3>
+    ${alertas.length ? alertas.map(a => `<div style="background:${a.c}15;border-left:4px solid ${a.c};padding:12px 16px;margin-bottom:8px;border-radius:4px"><div style="font-size:0.82rem;font-weight:700;color:${a.c};margin-bottom:4px">${esc(a.t)}</div><div style="font-size:0.82rem;line-height:1.5">${esc(a.m)}</div></div>`).join('') : '<div class="alert alert-success">✅ Nenhum indicador piorou 3 meses seguidos.</div>'}
+    <h3 style="font-size:1rem;margin:16px 0 12px;color:var(--primary)">📅 Linha do Tempo — Evolução Mensal</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Mês</th><th>Vendas (R$)</th><th>% Meta 1</th><th>Planos</th><th>Qualidade</th><th>Variação Base</th></tr>
+      ${hist.map(h => { const pm = h.meta ? h.total / h.meta * 100 : 0; return `<tr style="${h.mes === currentMonth ? 'background:#e8eaf6' : ''}"><td><strong>${esc(h.mes)}</strong></td><td>R$ ${fmt(h.total)}</td><td style="color:${pm >= 100 ? '#1b5e20' : pm >= 70 ? '#e65100' : '#c62828'}">${pm.toFixed(0)}%</td><td>${h.vendas}</td><td style="color:${h.qual >= 70 ? '#1b5e20' : h.qual >= 50 ? '#f57c00' : '#c62828'}">${h.qual.toFixed(0)}%</td><td style="color:${h.varBase >= 0 ? '#1b5e20' : '#c62828'}">${h.ini ? (h.varBase >= 0 ? '+' : '') + pct(h.varBase) + '%' : '—'}</td></tr>`; }).join('')}
+    </table></div>
+    <div class="alert alert-info" style="margin-top:16px"><strong>💡 Regra de ouro:</strong> nenhum indicador pode piorar por 3 meses seguidos. Se acontecer, é hora de agir imediatamente.</div>`;
+}
+
+// ==================== PREENCHER (restrito) ====================
+function moneyInput(id, val) { return `<input type="text" inputmode="decimal" class="money" id="${id}" value="${fmt2(val)}">`; }
+function intInput(id, val) { return `<input type="number" min="0" id="${id}" value="${Math.round(val)}">`; }
+function renderPreencher() {
+  if (!isUnlocked) return;
+  const L = records.length ? records[0] : {};
+  const p = currentMonth.split('/'), idx = ABREV.indexOf(p[0]), ano = +p[1];
+  const min = iso(new Date(ano, idx, 1)), max = iso(new Date(ano, idx + 1, 0)), hojeIso = iso(new Date());
+  const dataPadrao = hojeIso >= min && hojeIso <= max ? hojeIso : max;
+  const linha = (rot, f) => `<tr><td><strong>${rot}</strong></td>
+      <td>${moneyInput(f.v, num(L[f.v]))}</td><td>${intInput(f.novas, num(L[f.novas]))}</td><td>${intInput(f.remat, num(L[f.remat]))}</td>
+      <td>${intInput(f.anuais, num(L[f.anuais]))}</td><td>${intInput(f.aval, num(L[f.aval]))}</td><td>${moneyInput(f.prod, num(L[f.prod]))}</td></tr>`;
+  $('preencherContent').innerHTML = `
+    <div id="preencherMsg"></div>
+    <div class="alert alert-info" style="background:linear-gradient(135deg,#e8eaf6 0%,#c5cae9 100%);border-left:4px solid #3f51b5;color:#1a237e">
+      <strong>📖 Como preencher (passo a passo)</strong>
+      <div style="margin-top:8px;font-size:0.85rem;line-height:1.6">
+        <strong>1.</strong> Os campos já vêm com os valores da <strong>última apuração</strong> do mês. Você só altera o que mudou.<br>
+        <strong>2.</strong> Os valores são <strong>acumulados do mês</strong>: se estava R$ 30.000 e hoje vendeu R$ 3.500, digite <strong>33.500</strong>.<br>
+        <strong>3.</strong> Valores em reais podem ser digitados como 33.500,00 ou 33500 — o painel entende os dois.<br>
+        <strong>4.</strong> <strong>Ativos início do mês</strong> e <strong>Renovações previstas</strong> se preenchem no começo do mês e não mudam depois.<br>
+        <strong>5.</strong> Para ajustar um dia que passou (ex.: dia 30 retroativo), troque a <strong>data da apuração</strong>.
+      </div>
+    </div>
+    <div class="section-title">Apuração — ${esc(rotulo(currentMonth))}</div>
+    <div class="card-grid">
+      <div class="form-group"><label for="fill_nome">Nome de quem está registrando</label><input type="text" id="fill_nome" maxlength="60" placeholder="Seu nome" value="${esc(L.nome || '')}"></div>
+      <div class="form-group"><label for="fill_data">Data da apuração (dentro de ${esc(currentMonth)})</label><input type="date" id="fill_data" min="${min}" max="${max}" value="${dataPadrao}"></div>
+    </div>
+    <div class="section-title">Vendas, Planos e Produtos por pessoa</div>
+    <div class="table-wrap"><table class="fill-table">
+      <thead><tr><th></th><th>Vendas pagas (R$)</th><th>Novos</th><th>Rematrículas</th><th>Anuais</th><th>Avaliações</th><th>Produtos (R$)</th></tr></thead>
+      <tbody>
+        ${SLOTS.map(c => linha(esc(c.nome), { v: 'c' + c.k + '_v', novas: 'c' + c.k + '_novas', remat: 'c' + c.k + '_remat', anuais: 'c' + c.k + '_p', aval: 'c' + c.k + '_aval', prod: 'c' + c.k + '_prod' })).join('')}
+        ${linha('Outros <span style="font-weight:400;color:#888">(líder/outros)</span>', { v: 'ov', novas: 'o_novas', remat: 'o_remat', anuais: 'op', aval: 'o_aval', prod: 'ou_prod' })}
+      </tbody>
+    </table></div>
+    <div style="font-size:.75rem;color:var(--text-light);margin-top:6px">Vendas = valores pagos, sem contar saldo devedor. Anuais = quantos dos planos vendidos são anuais. No celular, deslize a tabela para o lado.</div>
+    <div class="section-title">Renovações</div>
+    <div class="card-grid">
+      <div class="form-group"><label for="renovTotal">Previstas para o mês (fixo)</label>${intInput('renovTotal', num(L.renovTotal))}</div>
+      <div class="form-group"><label for="renovFeitos">Efetivadas (acumulam no mês)</label>${intInput('renovFeitos', num(L.renovFeitos))}</div>
+    </div>
+    <div class="section-title">Dados de Retenção</div>
+    <div class="card-grid">
+      <div class="form-group"><label for="ativos_inicio">Ativos início do mês (fixo)</label>${intInput('ativos_inicio', num(L.ativos_inicio))}</div>
+      <div class="form-group"><label for="cancelamentos">Cancelamentos (acumulam no mês)</label>${intInput('cancelamentos', num(L.cancelamentos))}</div>
+    </div>
+    <div style="margin-top:20px"><button class="btn btn-primary" id="btnSalvar" onclick="saveData()">💾 Salvar Registro</button></div>
+    <div class="alert alert-info" style="margin-top:16px">
+      <strong>📋 Últimas apurações deste mês:</strong>
+      <div class="table-wrap"><table>
+        <tr><th>Nome</th><th>Data</th><th>Hora</th><th>Total (R$)</th></tr>
+        ${records.length ? records.slice(0, 5).map(r => `<tr><td>${esc(r.nome || '—')}</td><td>${esc(r.data || '—')}</td><td>${esc(r.hora || '—')}</td><td>R$ ${fmt(num(r.total))}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center">Nenhum registro anterior neste mês</td></tr>'}
+      </table></div>
+    </div>`;
+  document.querySelectorAll('#preencherContent input.money').forEach(i => {
+    i.addEventListener('focus', () => { if (num(i.value) === 0) i.value = ''; setTimeout(() => i.select(), 0); });
+    i.addEventListener('blur', () => { i.value = fmt2(num(i.value)); });
+  });
+}
+
+async function saveData() {
+  const msg = $('preencherMsg'), nome = $('fill_nome').value.trim();
+  if (!nome) { msg.innerHTML = '<div class="alert alert-error">Digite o nome de quem está registrando.</div>'; return; }
+  const dIso = $('fill_data').value;
+  if (!dIso || dIso < $('fill_data').min || dIso > $('fill_data').max) { msg.innerHTML = '<div class="alert alert-error">Escolha uma data dentro de ' + esc(rotulo(currentMonth)) + '.</div>'; return; }
+  const [y, m, d] = dIso.split('-');
+  const val = id => { const e = $(id); return e ? Math.max(num(e.value), 0) : 0; };
+  const dados = { nome, data: d + '/' + m + '/' + y, hora: new Date().toTimeString().slice(0, 5) };
+  ['ov', 'o_novas', 'o_remat', 'op', 'o_aval', 'ou_prod', 'renovTotal', 'renovFeitos', 'ativos_inicio', 'cancelamentos'].forEach(f => dados[f] = val(f));
+  SLOTS.forEach(c => { ['v', 'novas', 'remat', 'p', 'aval', 'prod'].forEach(f => dados['c' + c.k + '_' + f] = val('c' + c.k + '_' + f)); dados['c' + c.k + '_nome'] = c.nome; });
+  const btn = $('btnSalvar'); btn.disabled = true; btn.textContent = 'Salvando...';
+  try {
+    const r = await apiPost({ action: 'salvar', senha: senhaLider, dados });
+    if (r && r.ok) {
+      toast('✅ Salvo! ' + nome + ' · ' + dados.data);
+      await loadMonth();
+      $('preencherMsg').innerHTML = '<div class="alert alert-success">✅ Registro salvo em ' + esc(currentMonth) + ' (' + esc(dados.data) + ') com sucesso!</div>';
+      return;
+    }
+    msg.innerHTML = '<div class="alert alert-error">⚠️ ' + esc((r && r.msg) || 'Erro ao salvar. Tente novamente.') + '</div>';
+    if (r && r.erro === 'senha') setUnlocked(false);
+  } catch (e) { msg.innerHTML = '<div class="alert alert-error">Erro de conexão: ' + esc(e.message) + '</div>'; }
+  const b = $('btnSalvar'); if (b) { b.disabled = false; b.textContent = '💾 Salvar Registro'; }
+}
+
+// ==================== CONFETTI ====================
+function launchConfetti() {
+  const canvas = $('confettiCanvas'), ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const colors = ['#e94560', '#f5a623', '#27ae60', '#2980b9', '#9b59b6', '#f1c40f', '#1abc9c'];
+  const pieces = Array.from({ length: 150 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height, w: Math.random() * 10 + 5, h: Math.random() * 6 + 3, color: colors[Math.floor(Math.random() * colors.length)], vy: Math.random() * 3 + 2, vx: Math.random() * 2 - 1, rot: Math.random() * 360, rs: Math.random() * 6 - 3 }));
+  let frame = 0;
+  (function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => { p.y += p.vy; p.x += p.vx; p.rot += p.rs; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot * Math.PI / 180); ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); });
+    if (++frame < 180) requestAnimationFrame(animate); else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  })();
+}
+
+init();
 </script>
 </body>
 </html>
